@@ -1,0 +1,2737 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2D6A4F">
+<title>건강만다라 | 건강검진 + 생활습관 통합 진단</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="🌿 건강만다라 통합 진단">
+<meta property="og:description" content="건강습관 진단 + 건강검진 수치로 만성질환 예방 생활습관을 설계합니다 | 8영역 64문항 + 검진 지표 분석">
+<meta property="og:image" content="https://mandala-gamma.vercel.app/preview.jpg">
+<meta name="description" content="건강습관 자가 진단과 건강검진 수치를 함께 분석해 만성질환 예방 생활습관을 설계합니다.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-dark:#2D6A4F; --green-mid:#52B788; --green-light:#D8F3DC;
+  --green-pale:#F0FAF3; --amber:#E07B39; --amber-light:#FFF3E0;
+  --red:#DC2626; --orange:#EA580C; --blue:#1D4ED8;
+  --text-dark:#1B2E22; --text-mid:#4A5E52; --text-light:#8AA693;
+  --white:#FFFFFF; --bg:#F7FBF8;
+  --shadow:0 4px 24px rgba(45,106,79,.10);
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text-dark);min-height:100vh;}
+
+/* ── PROGRESS BAR ── */
+#progress-bar{position:fixed;top:0;left:0;height:5px;
+  background:linear-gradient(90deg,var(--green-mid),var(--amber));
+  width:0%;transition:width .4s ease;z-index:999;}
+
+/* ── HEADER ── */
+header{background:var(--green-dark);color:#fff;padding:16px 20px;text-align:center;
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+header .brand{font-size:12px;opacity:.7;letter-spacing:2px;margin-bottom:3px;}
+header h1{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;}
+
+/* ── SCREENS ── */
+.screen{display:none;animation:fadeUp .45s ease;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.container{max-width:700px;margin:0 auto;padding:24px 16px 80px;}
+
+/* ── INTRO ── */
+.intro-hero{background:linear-gradient(135deg,var(--green-dark),#1a5c3a);
+  border-radius:var(--radius);padding:36px 24px;color:#fff;text-align:center;margin-bottom:24px;}
+.mandala-icon{width:76px;height:76px;margin:0 auto 18px;
+  background:rgba(255,255,255,.15);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:38px;}
+.intro-hero h2{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;margin-bottom:10px;}
+.intro-hero p{font-size:14px;opacity:.9;line-height:1.8;}
+.intro-badge{display:inline-block;margin-top:14px;background:rgba(255,255,255,.2);
+  border-radius:20px;padding:6px 18px;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.3);}
+
+.area-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px;}
+.area-card{background:#fff;border-radius:12px;padding:12px 6px;text-align:center;
+  box-shadow:var(--shadow);border-top:3px solid var(--green-mid);}
+.area-card .icon{font-size:22px;margin-bottom:5px;}
+.area-card .name{font-size:11px;font-weight:700;color:var(--green-dark);}
+.area-card .sub{font-size:9px;color:var(--text-light);margin-top:2px;}
+
+.info-box{background:#fff;border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);margin-bottom:20px;}
+.info-box h3{font-size:14px;color:var(--green-dark);font-weight:700;margin-bottom:12px;}
+.info-box .focus-text{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:12px;}
+
+.founder-story-box{margin-bottom:16px;}
+.founder-story-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:4px 0;}
+.founder-story-toggle h3{margin:0;}
+.founder-story-arrow{font-size:12px;color:var(--text-mid);transition:transform .2s;}
+.founder-story-arrow.open{transform:rotate(180deg);}
+.founder-story-content{display:none;margin-top:12px;font-size:12px;line-height:1.8;color:var(--text-mid);}
+.founder-story-content.show{display:block;}
+.founder-quote{background:var(--green-pale);border-left:3px solid var(--green-dark);border-radius:8px;padding:10px 14px;margin:10px 0;font-weight:700;color:var(--green-dark);font-size:12.5px;}
+
+.score-legend{display:flex;gap:6px;flex-wrap:wrap;}
+.score-badge{flex:1;min-width:100px;padding:10px 8px;border-radius:10px;text-align:center;font-size:11px;}
+.score-badge .num{font-size:20px;font-weight:900;}
+.s1{background:#FEE2E2;color:#991B1B;}
+.s2{background:#FEF3C7;color:#92400E;}
+.s3{background:#D1FAE5;color:#065F46;}
+.s4{background:#DBEAFE;color:#1E40AF;}
+
+.btn-start{width:100%;padding:18px;border:none;border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--green-dark),var(--green-mid));
+  color:#fff;font-size:17px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 20px rgba(45,106,79,.35);
+  transition:transform .2s,box-shadow .2s;font-family:'Noto Sans KR',sans-serif;}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,106,79,.4);}
+.time-note{text-align:center;font-size:12px;color:var(--text-light);margin-top:8px;}
+.btn-quick-cta{width:100%;padding:15px;border:2px solid var(--green-mid);border-radius:var(--radius);
+  background:#fff;color:var(--green-dark);font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;transition:all .2s;margin-top:10px;
+  display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-quick-cta:hover{background:var(--green-pale);transform:translateY(-1px);}
+.quick-cta-divider{text-align:center;font-size:11px;color:var(--text-light);
+  margin:14px 0 4px;position:relative;}
+.quick-cta-divider::before,.quick-cta-divider::after{content:'';
+  position:absolute;top:50%;width:38%;height:1px;background:#E5EDE8;}
+.quick-cta-divider::before{left:0;}
+.quick-cta-divider::after{right:0;}
+.quick-cta-cards{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.quick-cta-item{display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-radius:14px;text-decoration:none;transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+.quick-cta-item:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.13);}
+.qc-1{background:linear-gradient(135deg,var(--green-dark),#1A5C3A);}
+.qc-2{background:linear-gradient(135deg,#1A6B8A,#0E4D6B);}
+.qc-3{background:linear-gradient(135deg,var(--amber),#C45E1A);}
+.quick-cta-item .qc-icon{font-size:20px;width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.quick-cta-item .qc-text{flex:1;color:#fff;}
+.quick-cta-item .qc-text span{font-size:9px;opacity:.75;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:2px;}
+.quick-cta-item .qc-text strong{font-size:13px;font-weight:700;}
+.quick-cta-item .qc-arrow{color:#fff;opacity:.65;font-size:16px;}
+
+/* ── QUIZ ── */
+.quiz-area-header{display:flex;align-items:center;gap:12px;
+  background:var(--green-dark);color:#fff;
+  border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;}
+.quiz-area-icon{width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.area-info h3{font-size:16px;font-weight:700;}
+.area-info p{font-size:11px;opacity:.8;margin-top:2px;line-height:1.5;}
+.area-focus{font-size:11px;opacity:.7;margin-top:4px;font-style:italic;}
+
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.quiz-progress-text{font-size:12px;color:var(--text-light);}
+.quiz-answered-count{font-size:12px;color:var(--green-mid);font-weight:700;}
+
+/* ── SUB-DIMENSION GROUP ── */
+.sub-dim-group{margin-bottom:18px;}
+.sub-dim-label{display:flex;align-items:center;gap:8px;
+  background:var(--green-pale);border-radius:10px;padding:8px 14px;
+  margin-bottom:10px;border-left:3px solid var(--green-mid);}
+.sub-dim-label .sdl-letter{width:22px;height:22px;background:var(--green-dark);
+  color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;}
+.sub-dim-label .sdl-text{font-size:12px;font-weight:700;color:var(--green-dark);}
+.sub-dim-label .sdl-ref{font-size:10px;color:var(--text-light);margin-left:auto;cursor:pointer;
+  text-decoration:underline;text-underline-offset:2px;}
+
+.question-card{background:#fff;border-radius:12px;padding:16px;
+  box-shadow:var(--shadow);margin-bottom:10px;border-left:4px solid var(--green-light);transition:border-color .2s;}
+.question-card.answered{border-left-color:var(--green-mid);}
+.q-text{font-size:13px;color:var(--text-dark);line-height:1.65;margin-bottom:11px;font-weight:500;}
+.q-num{color:var(--green-mid);font-weight:700;margin-right:5px;}
+
+.radio-group{display:flex;gap:5px;}
+.radio-group label{flex:1;text-align:center;cursor:pointer;}
+.radio-group input[type=radio]{display:none;}
+.radio-btn{display:block;padding:8px 4px;border-radius:8px;
+  border:2px solid #E5EDE8;font-size:11px;color:var(--text-mid);
+  transition:all .2s;background:#fff;line-height:1.3;}
+.radio-group input[type=radio]:checked + .radio-btn{
+  background:var(--green-dark);border-color:var(--green-dark);color:#fff;font-weight:700;}
+
+.btn-nav{display:flex;gap:10px;margin-top:22px;}
+.btn-prev,.btn-next{flex:1;padding:14px;border:none;border-radius:var(--radius);
+  font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
+.btn-prev{background:#fff;color:var(--text-mid);border:2px solid #E5EDE8;}
+.btn-next{background:var(--green-dark);color:#fff;box-shadow:0 4px 14px rgba(45,106,79,.3);}
+.btn-next:hover{background:var(--green-mid);}
+.btn-next:disabled{background:#ccc;box-shadow:none;cursor:not-allowed;}
+
+/* ── RESULT ── */
+.result-hero{background:linear-gradient(135deg,var(--green-dark),#1A4731);
+  border-radius:var(--radius);padding:26px 22px;color:#fff;text-align:center;margin-bottom:22px;}
+.total-score{font-size:60px;font-weight:900;line-height:1;}
+.total-label{font-size:13px;opacity:.65;margin-top:4px;}
+.result-grade{display:inline-block;margin-top:12px;
+  background:rgba(255,255,255,.18);border-radius:20px;
+  padding:6px 18px;font-size:14px;font-weight:700;}
+.result-hero .result-msg{font-size:13px;opacity:.85;margin-top:10px;line-height:1.7;}
+
+.name-input-box{background:#fff;border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);margin-bottom:18px;}
+.name-input-box label{font-size:13px;font-weight:700;color:var(--green-dark);display:block;margin-bottom:7px;}
+.name-input-box input{width:100%;padding:11px 14px;border:2px solid #E5EDE8;
+  border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;
+  outline:none;transition:border-color .2s;}
+.name-input-box input:focus{border-color:var(--green-mid);}
+
+/* ── RADAR ── */
+.chart-box{background:#fff;border-radius:var(--radius);padding:22px;
+  box-shadow:var(--shadow);margin-bottom:18px;text-align:center;}
+.chart-box h3{font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:14px;}
+#radarCanvas{max-width:320px;width:100%;}
+
+/* ── WEAK RANKING ── */
+.weak-rank-section{background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.weak-rank-header{background:linear-gradient(135deg,#7C3AED,#5B21B6);
+  color:#fff;padding:14px 18px;}
+.weak-rank-header h3{font-size:14px;font-weight:700;margin-bottom:2px;}
+.weak-rank-header p{font-size:11px;opacity:.8;}
+.weak-rank-items{padding:16px;}
+.rank-item{display:flex;align-items:flex-start;gap:12px;
+  padding:12px;border-radius:12px;margin-bottom:10px;}
+.rank-item:last-child{margin-bottom:0;}
+.rank-1{background:#FEF2F2;border:2px solid #FECACA;}
+.rank-2{background:#FFF7ED;border:2px solid #FED7AA;}
+.rank-3{background:#FFF9C4;border:2px solid #FDE68A;}
+.rank-badge{width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
+.rank-1 .rank-badge{background:#EF4444;color:#fff;}
+.rank-2 .rank-badge{background:#F97316;color:#fff;}
+.rank-3 .rank-badge{background:#EAB308;color:#fff;}
+.rank-content h4{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:4px;}
+.rank-content .rank-score{font-size:11px;color:var(--text-mid);margin-bottom:5px;}
+.rank-content .rank-tip{font-size:12px;color:var(--text-mid);line-height:1.6;
+  background:rgba(255,255,255,.7);border-radius:8px;padding:8px 10px;margin-top:5px;}
+
+/* ── SCORE TABLE ── */
+.score-table{background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.score-table-header{background:var(--green-dark);color:#fff;
+  padding:13px 18px;font-size:13px;font-weight:700;}
+.score-row{padding:12px 18px;border-bottom:1px solid #F0F4F1;}
+.score-row:last-child{border-bottom:none;}
+.score-row-top{display:flex;align-items:center;margin-bottom:8px;}
+.score-row .area-label{flex:1;font-size:13px;font-weight:700;}
+.score-row .score-pct{font-size:12px;font-weight:700;width:48px;text-align:right;}
+.area-bar-wrap{height:8px;background:#F0F4F1;border-radius:4px;margin-bottom:6px;}
+.area-bar{height:100%;border-radius:4px;transition:width 1s ease;}
+.sub-bars{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.sub-bar-item{text-align:center;}
+.sub-bar-item .sb-label{font-size:9px;color:var(--text-light);margin-bottom:3px;}
+.sub-bar-item .sb-fill-wrap{height:5px;background:#F0F4F1;border-radius:3px;}
+.sub-bar-item .sb-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+.risk-badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:10px;font-weight:700;margin-left:6px;}
+.risk-high{background:#FEE2E2;color:#991B1B;}
+.risk-warn{background:#FEF3C7;color:#92400E;}
+.risk-low{background:#D1FAE5;color:#065F46;}
+.risk-best{background:#DBEAFE;color:#1E40AF;}
+
+/* ── AREA INTERPRETATION ── */
+.area-insight-section{background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.area-insight-header{background:linear-gradient(135deg,#0F766E,#115E59);
+  color:#fff;padding:14px 18px;}
+.area-insight-header h3{font-size:14px;font-weight:700;margin-bottom:2px;}
+.area-insight-header p{font-size:11px;opacity:.85;line-height:1.5;}
+.area-insight-grid{display:grid;grid-template-columns:1fr;gap:12px;padding:16px;}
+.area-insight-card{border-radius:14px;padding:14px;border:2px solid #E5EDE8;background:#fff;}
+.area-insight-card.strength{background:#F0F9FF;border-color:#BFDBFE;}
+.area-insight-card.caution{background:#FFFBEB;border-color:#FDE68A;}
+.area-insight-card.weak{background:#FEF2F2;border-color:#FECACA;}
+.area-insight-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.area-insight-title{font-size:13px;font-weight:800;color:var(--text-dark);}
+.area-insight-score{font-size:11px;color:var(--text-light);margin-bottom:8px;}
+.area-insight-summary{font-size:12px;color:var(--text-mid);line-height:1.7;margin-bottom:10px;}
+.area-insight-focus{font-size:11px;color:var(--text-mid);background:rgba(255,255,255,.72);
+  border-radius:10px;padding:8px 10px;margin-bottom:10px;}
+.area-insight-focus strong{color:var(--text-dark);}
+.area-insight-suggestion{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.82);}
+.area-insight-suggestion strong{display:block;font-size:11px;color:var(--green-dark);margin-bottom:4px;}
+.area-insight-suggestion span{font-size:11px;color:var(--text-mid);line-height:1.7;display:block;}
+.status-chip{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap;}
+.status-chip.strength{background:#DBEAFE;color:#1E40AF;}
+.status-chip.caution{background:#FEF3C7;color:#92400E;}
+.status-chip.weak{background:#FEE2E2;color:#991B1B;}
+
+/* ── ACTION PLAN ── */
+.action-section{background:#fff;border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow);margin-bottom:18px;}
+.action-section h3{font-size:14px;font-weight:700;color:var(--amber);margin-bottom:14px;}
+.action-item{display:flex;align-items:flex-start;gap:10px;
+  padding:11px;background:var(--amber-light);border-radius:10px;margin-bottom:8px;}
+.action-item:last-child{margin-bottom:0;}
+.ai-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.ai-text h4{font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:3px;}
+.ai-text p{font-size:11px;color:var(--text-mid);line-height:1.6;}
+
+/* ── EVIDENCE ── */
+.evidence-section{background:#fff;border-radius:var(--radius);
+  padding:18px;box-shadow:var(--shadow);margin-bottom:18px;}
+.evidence-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.evidence-toggle h3{font-size:13px;font-weight:700;color:var(--text-mid);}
+.evidence-toggle .ev-arrow{font-size:14px;color:var(--text-light);transition:transform .3s;}
+.evidence-toggle.open .ev-arrow{transform:rotate(180deg);}
+.evidence-content{display:none;margin-top:14px;}
+.evidence-content.show{display:block;}
+.ev-area-block{margin-bottom:14px;}
+.ev-area-block h4{font-size:12px;font-weight:700;color:var(--green-dark);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;}
+.ev-ref{font-size:11px;color:var(--text-mid);line-height:1.7;
+  padding:6px 10px;background:var(--green-pale);border-radius:8px;margin-bottom:3px;}
+.ev-ref strong{color:var(--green-dark);}
+
+/* ── CTA ── */
+.cta-section{margin-bottom:40px;}
+.cta-title{text-align:center;margin-bottom:16px;}
+.cta-title h3{font-family:'Noto Serif KR',serif;font-size:18px;color:var(--green-dark);font-weight:700;}
+.cta-title p{font-size:12px;color:var(--text-mid);margin-top:5px;}
+.cta-cards{display:flex;flex-direction:column;gap:12px;}
+.cta-card{display:flex;align-items:center;gap:14px;padding:18px;border-radius:var(--radius);
+  text-decoration:none;transition:all .25s;box-shadow:var(--shadow);}
+.cta-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.15);}
+.cta-1{background:linear-gradient(135deg,var(--green-dark),#1A5C3A);}
+.cta-2{background:linear-gradient(135deg,#1A6B8A,#0E4D6B);}
+.cta-3{background:linear-gradient(135deg,var(--amber),#C45E1A);}
+.cta-icon{width:48px;height:48px;border-radius:12px;
+  background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.cta-text{flex:1;color:#fff;}
+.cta-tag{font-size:10px;opacity:.75;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:3px;}
+.cta-text h4{font-size:15px;font-weight:700;}
+.cta-text p{font-size:11px;opacity:.82;margin-top:2px;line-height:1.5;}
+.cta-arrow{color:#fff;opacity:.65;font-size:18px;}
+
+.share-btn{width:100%;padding:16px;border:none;border-radius:var(--radius);
+  background:linear-gradient(135deg,#FEE500,#F5D800);
+  color:#3C1E1E;font-size:15px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 14px rgba(254,229,0,.4);
+  font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;transition:all .2s;}
+.share-btn:hover{transform:translateY(-2px);}
+.share-link-btn{width:100%;padding:14px;border:2px solid var(--green-mid);border-radius:var(--radius);
+  background:#fff;color:var(--green-dark);font-size:14px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Noto Sans KR',sans-serif;margin-bottom:18px;transition:all .2s;}
+.footer-note{text-align:center;font-size:11px;color:var(--text-light);
+  padding-top:18px;border-top:1px solid #E5EDE8;}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;
+  align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:#fff;border-radius:var(--radius);padding:24px;max-width:480px;width:100%;
+  max-height:80vh;overflow-y:auto;}
+.modal-box h3{font-size:15px;font-weight:700;color:var(--green-dark);margin-bottom:12px;}
+.modal-box p{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:10px;}
+.modal-box .close-btn{width:100%;padding:12px;border:none;border-radius:10px;
+  background:var(--green-dark);color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;
+  font-family:'Noto Sans KR',sans-serif;}
+
+/* ── LOADING ── */
+.loading-overlay{display:none;position:fixed;inset:0;
+  background:rgba(45,106,79,.92);z-index:999;
+  flex-direction:column;align-items:center;justify-content:center;color:#fff;}
+.loading-overlay.show{display:flex;}
+.spinner{width:48px;height:48px;border:4px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── CHECKUP SCREEN ── */
+.checkup-hero{background:linear-gradient(135deg,#1e3a5f,#2563EB);
+  border-radius:var(--radius);padding:26px 20px;color:#fff;text-align:center;margin-bottom:20px;}
+.checkup-hero h2{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.checkup-hero p{font-size:13px;opacity:.9;line-height:1.8;}
+
+.checkup-notice{background:#FFF8EC;border-radius:12px;padding:12px 14px;
+  font-size:12px;color:#92400E;line-height:1.7;margin-bottom:16px;
+  border-left:3px solid var(--amber);}
+
+.checkup-section{background:#fff;border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);margin-bottom:14px;}
+.checkup-sec-title{display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  padding-bottom:9px;border-bottom:2px solid var(--green-light);}
+.checkup-sec-title .cs-icon{width:30px;height:30px;border-radius:8px;
+  background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.checkup-sec-title h3{font-size:14px;font-weight:700;color:var(--green-dark);}
+
+.checkup-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.ci-item{display:flex;flex-direction:column;gap:4px;}
+.ci-item label{font-size:11px;font-weight:700;color:var(--text-mid);}
+.ci-ref{font-size:9px;color:var(--text-light);line-height:1.4;}
+.ci-input{width:100%;padding:9px 11px;border:2px solid #E5EDE8;border-radius:10px;
+  font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:all .2s;background:#fff;}
+.ci-input:focus{border-color:var(--green-mid);}
+.ci-input.ci-ok{border-color:#52B788;background:#F0FAF3;}
+.ci-input.ci-gz{border-color:#F59E0B;background:#FFFBEB;}
+.ci-input.ci-wn{border-color:#EF4444;background:#FEF2F2;}
+.ci-hint{font-size:10px;margin-top:2px;padding:2px 7px;border-radius:6px;display:none;line-height:1.4;}
+.ci-hint.show{display:block;}
+.ci-hint.ok{background:#D1FAE5;color:#065F46;}
+.ci-hint.gz{background:#FEF3C7;color:#92400E;}
+.ci-hint.wn{background:#FEE2E2;color:#991B1B;}
+
+.ratio-pill{display:inline-flex;align-items:center;gap:6px;margin-top:7px;
+  padding:6px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--green-light);}
+.ratio-pill .rp-label{font-size:11px;color:var(--text-mid);}
+.ratio-pill .rp-val{font-size:13px;font-weight:700;}
+
+.nlr-box,.buncr-box{display:none;margin-top:10px;border-radius:10px;padding:10px 13px;border-left:3px solid;}
+.nlr-box{background:#F0FAF3;border-color:var(--green-mid);}
+.buncr-box{background:#EBF3FF;border-color:#2563EB;}
+.ratio-box-title{font-size:12px;font-weight:700;margin-bottom:4px;}
+.ratio-box-val{font-size:20px;font-weight:900;}
+.ratio-box-ref{font-size:10px;color:var(--text-light);margin-top:3px;}
+
+.btn-analyze{width:100%;padding:17px;border:none;border-radius:var(--radius);
+  background:linear-gradient(135deg,#1e3a5f,#2563EB);
+  color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 20px rgba(30,58,95,.3);
+  transition:transform .2s;font-family:'Noto Sans KR',sans-serif;margin-top:6px;}
+.btn-analyze:hover{transform:translateY(-2px);}
+.btn-skip-checkup{width:100%;padding:13px;border:2px solid #E5EDE8;border-radius:var(--radius);
+  background:#fff;color:var(--text-mid);font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;margin-top:10px;}
+
+/* ── CHECKUP RESULT (in result screen) ── */
+.checkup-result-section{background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.crs-header{background:linear-gradient(135deg,#1e3a5f,#2563EB);color:#fff;padding:14px 18px;}
+.crs-header h3{font-size:14px;font-weight:700;margin-bottom:2px;}
+.crs-header p{font-size:11px;opacity:.8;}
+.crs-body{padding:16px;}
+
+.gz-summary{background:linear-gradient(135deg,#FFF8EC,#FFFDE7);
+  border:2px solid var(--amber);border-radius:12px;padding:14px;margin-bottom:14px;}
+.gz-summary h4{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:6px;}
+.gz-summary p{font-size:12px;color:var(--text-mid);line-height:1.7;}
+
+.bm-card{border-radius:12px;padding:13px;margin-bottom:11px;border:2px solid;}
+.bm-card.bm-ok{background:#F0FDF4;border-color:#86EFAC;}
+.bm-card.bm-gz{background:#FFFBEB;border-color:#FCD34D;}
+.bm-card.bm-wn{background:#FEF2F2;border-color:#FCA5A5;}
+.bm-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:8px;}
+.bm-name{font-size:13px;font-weight:700;color:var(--text-dark);}
+.bm-val{font-size:13px;font-weight:900;text-align:right;}
+.bm-card.bm-ok .bm-val{color:#16A34A;}
+.bm-card.bm-gz .bm-val{color:#D97706;}
+.bm-card.bm-wn .bm-val{color:#DC2626;}
+.bm-status{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:700;display:block;margin-top:3px;}
+.bm-card.bm-ok .bm-status{background:#D1FAE5;color:#065F46;}
+.bm-card.bm-gz .bm-status{background:#FEF3C7;color:#92400E;}
+.bm-card.bm-wn .bm-status{background:#FEE2E2;color:#991B1B;}
+.bm-domain-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
+.bm-domain-tag{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600;}
+.bm-insight{font-size:11px;color:var(--text-mid);line-height:1.65;
+  background:rgba(255,255,255,.8);border-radius:8px;padding:8px 10px;}
+.bm-insight strong{color:var(--text-dark);font-weight:700;}
+
+.integrated-section{background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.is-header{background:linear-gradient(135deg,var(--green-dark),#16A34A);color:#fff;padding:14px 18px;}
+.is-header h3{font-size:14px;font-weight:700;margin-bottom:2px;}
+.is-header p{font-size:11px;opacity:.8;}
+.is-body{padding:16px;}
+.is-domain{border-radius:12px;padding:13px;margin-bottom:11px;border-left:4px solid;}
+.is-domain h4{font-size:13px;font-weight:700;margin-bottom:7px;}
+.is-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;}
+.is-pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;}
+.is-detail{font-size:11px;color:var(--text-mid);line-height:1.7;}
+
+@media(max-width:480px){
+  .checkup-grid{grid-template-columns:1fr;}
+  .container{padding:16px 12px 100px;}
+  header{padding:12px 16px;}
+  header .brand{font-size:11px;}
+  header h1{font-size:15px;}
+  .intro-hero{padding:28px 18px;}
+  .intro-hero h2{font-size:21px;}
+  .intro-hero p{font-size:13px;}
+  .mandala-icon{width:64px;height:64px;font-size:32px;}
+  .intro-badge{font-size:11px;padding:5px 14px;}
+  .area-grid{grid-template-columns:repeat(4,1fr);gap:5px;}
+  .area-card{padding:10px 4px;}
+  .area-card .icon{font-size:18px;}
+  .area-card .name{font-size:10px;}
+  .area-card .sub{font-size:8px;}
+  .score-badge{min-width:60px;padding:8px 4px;}
+  .score-badge .num{font-size:17px;}
+  .btn-start{padding:20px;font-size:16px;border-radius:14px;}
+  .quiz-area-header{padding:14px;}
+  .area-info h3{font-size:15px;}
+  .area-info p{font-size:11px;}
+  .q-text{font-size:13px;line-height:1.7;}
+  .radio-btn{padding:11px 3px;font-size:10px;min-height:44px;
+    display:flex;align-items:center;justify-content:center;}
+  .radio-group{gap:4px;}
+  .btn-prev,.btn-next{padding:16px;font-size:15px;min-height:52px;}
+  .btn-nav{gap:8px;margin-top:20px;
+    position:sticky;bottom:0;background:var(--bg);
+    padding:12px 12px 20px;
+    box-shadow:0 -4px 16px rgba(0,0,0,.08);}
+  .total-score{font-size:52px;}
+  .result-hero{padding:22px 16px;}
+  .result-msg{font-size:12px;}
+  #radarCanvas{max-width:280px;}
+  .rank-item{padding:10px;}
+  .rank-content h4{font-size:12px;}
+  .rank-content .rank-tip{font-size:11px;}
+  .sub-bars{grid-template-columns:repeat(4,1fr);}
+  .sb-label{font-size:8px;}
+  .cta-card{padding:16px;min-height:72px;}
+  .cta-icon{width:42px;height:42px;font-size:20px;}
+  .cta-text h4{font-size:14px;}
+  .cta-text p{font-size:11px;}
+  .cta-tag{font-size:9px;}
+  .name-input-box input{font-size:16px;}
+  .action-item{padding:12px 10px;}
+  .ai-text p{font-size:11px;}
+}
+@media(max-width:360px){
+  .area-card .name{font-size:9px;}
+  .radio-btn{font-size:9px;}
+  .cta-text h4{font-size:13px;}
+  header h1{font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header>
+  <div class="brand">건강이음센터 | 올바른 보건쌤</div>
+  <h1>🌿 건강만다라 통합 진단</h1>
+</header>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="font-size:15px;font-weight:700;" id="loadingTitle">결과를 분석하고 있습니다...</div>
+  <div style="font-size:12px;opacity:.75;margin-top:6px;" id="loadingSub">최약점 영역을 찾는 중</div>
+</div>
+
+<!-- 근거 모달 -->
+<div class="modal-overlay" id="refModal">
+  <div class="modal-box">
+    <h3 id="modal-title">근거 자료</h3>
+    <div id="modal-content"></div>
+    <button class="close-btn" onclick="closeModal()">닫기</button>
+  </div>
+</div>
+
+<!-- 프리미엄 리포트 리드 입력 모달 -->
+<div class="modal-overlay" id="premiumModal">
+  <div class="modal-box">
+    <h3>🎁 프리미엄 통합분석 리포트</h3>
+    <p style="font-size:13px;color:var(--text-mid);margin-bottom:14px;line-height:1.6;">검진수치와 습관 점수를 함께 분석한 맞춤 프리미엄 리포트를 확인할 수 있습니다.</p>
+    <div class="name-input-box" style="box-shadow:none;padding:0;margin-bottom:10px;">
+      <label for="premiumName">이름</label>
+      <input type="text" id="premiumName" placeholder="이름을 입력하세요" maxlength="20">
+    </div>
+    <div class="name-input-box" style="box-shadow:none;padding:0;margin-bottom:10px;">
+      <label for="premiumAge">나이</label>
+      <input type="number" id="premiumAge" placeholder="나이를 입력하세요" min="1" max="120">
+    </div>
+    <div class="name-input-box" style="box-shadow:none;padding:0;margin-bottom:10px;">
+      <label for="premiumGender">성별</label>
+      <select id="premiumGender" style="width:100%;cursor:pointer;">
+        <option value="">선택하세요</option>
+        <option value="m">남성</option>
+        <option value="f">여성</option>
+      </select>
+    </div>
+    <div class="name-input-box" style="box-shadow:none;padding:0;margin-bottom:10px;">
+      <label for="premiumEmail">이메일</label>
+      <input type="email" id="premiumEmail" placeholder="example@email.com" maxlength="60">
+    </div>
+    <div class="name-input-box" style="box-shadow:none;padding:0;margin-bottom:10px;">
+      <label for="premiumContact">연락처 (휴대폰 번호)</label>
+      <input type="text" id="premiumContact" placeholder="010-1234-5678" maxlength="20">
+    </div>
+    <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text-mid);line-height:1.6;margin-bottom:10px;cursor:pointer;">
+      <input type="checkbox" id="premiumConsent" style="margin-top:2px;flex-shrink:0;">
+      <span>건강이음센터로 개인정보 수집 및 건강정보광고를 받는 것을 수신 동의합니다.</span>
+    </label>
+    <input type="text" id="premiumHoneypot" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;">
+    <div id="premiumError" style="display:none;color:#DC2626;font-size:12px;margin-bottom:8px;"></div>
+    <button class="close-btn" id="premiumSubmitBtn" onclick="submitPremiumLead()">리포트 받기</button>
+    <button class="close-btn" style="background:#fff;color:var(--text-mid);border:2px solid #E5EDE8;margin-top:8px;" onclick="closePremiumModal()">닫기</button>
+  </div>
+</div>
+
+<!-- ════ SCREEN 1: INTRO ════ -->
+<div class="screen active" id="screen-intro">
+  <div class="container">
+    <div class="inapp-banner" id="inappBanner" style="display:none;background:#FFF3E0;border:2px solid #E07B39;border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.7;color:#7A4A1E;margin-bottom:14px;">
+      <strong style="color:#B94A00;">⚠️ 카카오톡·인스타 등 앱 브라우저로 들어오셨네요!</strong><br>
+      나중에 프리미엄 리포트를 <strong>PDF로 저장</strong>하려면 앱 내 브라우저가 아닌 <strong>Safari/Chrome</strong>에서 진행하셔야 해요.<br>
+      아래 버튼으로 링크를 복사한 뒤, 브라우저 주소창에 붙여넣어 다시 열어주세요.
+      <div style="margin-top:8px;"><button onclick="copyLinkForExternalBrowser()" style="background:#2D6A4F;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:12px;cursor:pointer;">🔗 링크 복사하기</button></div>
+    </div>
+    <div class="intro-hero">
+      <div class="mandala-icon">🌿</div>
+      <h2>건강만다라 통합 진단</h2>
+      <p>건강습관 자가 체크 + 건강검진 수치 분석으로<br><strong>만성질환 예방 생활습관을 함께 설계합니다</strong><br><br>
+      <strong>식·동·휴·심·환·연·지·락</strong> 8영역의 균형과<br>내 건강데이터를 연결해 드립니다</p>
+      <span class="intro-badge">📊 8영역 × 8문항 + 건강검진 지표 통합 분석</span>
+    </div>
+
+    <div class="area-grid">
+      <div class="area-card"><div class="icon">🍎</div><div class="name">식(食)</div><div class="sub">혈당·혈압·체중</div></div>
+      <div class="area-card"><div class="icon">🏃</div><div class="name">동(動)</div><div class="sub">활동 설계</div></div>
+      <div class="area-card"><div class="icon">😴</div><div class="name">휴(休)</div><div class="sub">수면 회복</div></div>
+      <div class="area-card"><div class="icon">🧠</div><div class="name">심(心)</div><div class="sub">정서 조절</div></div>
+      <div class="area-card"><div class="icon">🏡</div><div class="name">환(環)</div><div class="sub">위험 차단</div></div>
+      <div class="area-card"><div class="icon">👥</div><div class="name">연(連)</div><div class="sub">지지망</div></div>
+      <div class="area-card"><div class="icon">📚</div><div class="name">지(智)</div><div class="sub">정보 리터러시</div></div>
+      <div class="area-card"><div class="icon">🎨</div><div class="name">락(樂)</div><div class="sub">건강 여가</div></div>
+    </div>
+
+    <div class="info-box">
+      <h3>🎯 이 진단이 특별한 이유</h3>
+      <p class="focus-text">
+        단순한 체크리스트가 아닙니다. <strong>건강습관 중재를 위한 진단</strong>이자<br>
+        현재 나의 <strong>건강검진 데이터를 종합</strong>해<br>
+        <strong>만성질환 예방을 위한 생활습관을 설계</strong>하는 학습 도구입니다.<br><br>
+        각 질문은 <strong>WHO·AHA·NIH·대한당뇨병학회 등</strong> 공신력 있는<br>
+        국내외 가이드라인과 임상 연구에 근거해 설계되었습니다.<br><br>
+        건강습관이 어떻게 질환의 원인이 되는지,<br>
+        그 연결고리를 <strong>내 몸의 수치와 함께</strong> 확인하세요.
+      </p>
+      <h3>📊 점수 체계 (4점 만점)</h3>
+      <div class="score-legend">
+        <div class="score-badge s1"><div class="num">1점</div>거의 하지 않음<br><small>0~25%</small></div>
+        <div class="score-badge s2"><div class="num">2점</div>가끔 실천함<br><small>26~50%</small></div>
+        <div class="score-badge s3"><div class="num">3점</div>자주 실천함<br><small>51~75%</small></div>
+        <div class="score-badge s4"><div class="num">4점</div>꾸준히 실천함<br><small>76~100%</small></div>
+      </div>
+    </div>
+
+    <!-- 대표자 스토리 -->
+    <div class="info-box founder-story-box">
+      <div class="founder-story-toggle" onclick="toggleFounderStory()">
+        <h3>👩‍⚕️ 왜 건강만다라를 만들었나</h3>
+        <span class="founder-story-arrow" id="founderArrow">▼</span>
+      </div>
+      <div class="founder-story-content" id="founderContent">
+        <p>23년차 질병예방전문가로 16년을 학교보건실이라는 제도권 안에서 건강사업을 해왔습니다. 하지만 결국 건강 문제는 가정에서부터 시작된다는 것을 알게 되어, 지난 7년간 제도권 밖 현장에서 수백 명을 직접 만나왔습니다.</p>
+        <p style="margin-top:10px;">그 과정에서 깨달은 것은 하나입니다. 정보는 넘쳐나지만, 정작 내가 무엇을 어떻게 해야 할지 아는 사람은 드물다는 것입니다. 한 영역만 파고드는 것이 아니라, 건강이음 8영역으로 균형 있게 설계해야 한다는 확신으로 이 진단을 만들었습니다.</p>
+        <div class="founder-quote">"건강은 정보를 더 많이 아는 사람이 아니라, 무너지는 신호를 끝까지 외면하지 않는 사람이 지킵니다."</div>
+        <div class="founder-quote">"몸은 어느 날 갑자기 무너지지 않습니다."</div>
+        <div class="founder-quote">"가장 약한 한 칸에서 먼저 새기 시작합니다."</div>
+        <div class="founder-quote">"건강은 지식이 아니라 태도입니다."</div>
+        <p style="margin-top:10px;">이 진단이 여러분의 건강한 삶에 작은 시작이 되기를 바랍니다.</p>
+      </div>
+    </div>
+
+    <!-- 진단 방식 선택 -->
+    <div class="info-box" style="margin-bottom:16px;">
+      <h3>🔬 진단 방식 선택</h3>
+      <div style="background:var(--green-pale);border-radius:12px;padding:12px 14px;margin:10px 0 4px;font-size:12px;line-height:1.7;color:var(--text-mid);">
+        <p><strong>📝 습관 진단 안내</strong><br>모든 문항은 <strong>최근 2주 동안</strong>의 생활습관을 기준으로 답변해주세요.</p>
+        <p style="margin-top:10px;"><strong>📋 건강검진 안내</strong><br>검사 시작 전, 최근 건강검진 결과지에서 아래 항목을 미리 확인해두시면 편리합니다.<br>
+        <strong>혈당</strong>(공복혈당·당화혈색소) · <strong>지질</strong>(중성지방·HDL·LDL·총콜레스테롤) · <strong>혈압</strong>(수축기·이완기) · <strong>체성분</strong>(BMI·허리둘레) · <strong>간기능</strong>(ALT·AST·GGT) · <strong>혈액</strong>(혈색소·MCV·RDW·호중구·림프구·hs-CRP) · <strong>신장</strong>(BUN·크레아티닌·eGFR) · <strong>기타</strong>(요산·TSH·비타민D·페리틴)<br>
+        <strong>알고 있는 항목만 입력하셔도 괜찮습니다.</strong> 모르는 항목은 비워두고 진행하세요.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+        <label style="display:flex;align-items:flex-start;gap:11px;padding:13px;border-radius:12px;border:2px solid var(--green-mid);background:var(--green-pale);cursor:pointer;">
+          <input type="radio" name="mode" value="both" checked style="margin-top:3px;accent-color:var(--green-dark);">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--green-dark);">⭐ 습관 진단 + 건강검진 통합 분석 (권장)</div>
+            <div style="font-size:11px;color:var(--text-mid);margin-top:2px;line-height:1.5;">64문항 체크 후 검진 수치를 입력하면<br>회색지대 감지 + 생활습관 설계까지 드립니다.</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:11px;padding:13px;border-radius:12px;border:2px solid #E5EDE8;background:#fff;cursor:pointer;">
+          <input type="radio" name="mode" value="habit" style="margin-top:3px;accent-color:var(--green-dark);">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-dark);">📝 건강습관 자가 진단만</div>
+            <div style="font-size:11px;color:var(--text-mid);margin-top:2px;">8영역 64문항으로 습관 최약점만 진단합니다.</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:11px;padding:13px;border-radius:12px;border:2px solid #E5EDE8;background:#fff;cursor:pointer;">
+          <input type="radio" name="mode" value="checkup" style="margin-top:3px;accent-color:var(--green-dark);">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-dark);">📋 건강검진 수치만 분석</div>
+            <div style="font-size:11px;color:var(--text-mid);margin-top:2px;">검진 결과 수치를 입력해 회색지대를 분석하고<br>생활습관 설계 방향을 안내합니다.</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startApp()">🌱 진단 시작하기</button>
+    <p class="time-note">⏱ 습관 진단 8~12분 | 검진 입력 3분 추가</p>
+
+    <div class="quick-cta-divider">진단 없이 바로 이동하기</div>
+    <div class="quick-cta-cards">
+      <a href="https://open.kakao.com/me/healthteather" target="_blank" rel="noopener noreferrer" class="quick-cta-item qc-1">
+        <div class="qc-icon">💬</div>
+        <div class="qc-text">
+          <span>Personalized</span>
+          <strong>1:1 건강기능식품·프로그램 상담</strong>
+        </div>
+        <div class="qc-arrow">›</div>
+      </a>
+      <a href="https://pf.kakao.com/_HlPnn" target="_blank" rel="noopener noreferrer" class="quick-cta-item qc-2">
+        <div class="qc-icon">📖</div>
+        <div class="qc-text">
+          <span>Self-directed</span>
+          <strong>건강칼럼 구독 신청</strong>
+        </div>
+        <div class="qc-arrow">›</div>
+      </a>
+      <a href="https://open.kakao.com/o/pYYxjLpi" target="_blank" rel="noopener noreferrer" class="quick-cta-item qc-3">
+        <div class="qc-icon">🌿</div>
+        <div class="qc-text">
+          <span>Community</span>
+          <strong>우주건강실천인증방</strong>
+        </div>
+        <div class="qc-arrow">›</div>
+      </a>
+    </div>
+
+    <div style="margin-top:16px;padding:13px 15px;background:#F0FAF3;border-radius:12px;
+      border-left:3px solid var(--green-mid);font-size:10px;color:var(--text-mid);line-height:1.8;">
+      © 2026 건강이음센터 (올바른 보건쌤). All Rights Reserved.<br>
+      본 프로그램의 8영역 진단 문항, 검진 지표 연계 알고리즘 및 결과 해석 텍스트는 저작권법의 보호를 받는 독창적 저작물이며,
+      무단 복제, 전재, 배포 및 상업적 도용을 금합니다. (저작권등록번호 C-2026-026168)<br>
+      기업·기관 사용 문의: ufoacademy@naver.com
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 2: QUIZ ════ -->
+<div class="screen" id="screen-quiz">
+  <div class="container">
+    <div class="quiz-area-header">
+      <div class="quiz-area-icon" id="quiz-area-icon">🍎</div>
+      <div class="area-info">
+        <h3 id="quiz-area-title">영역 1. 식(食)</h3>
+        <p id="quiz-area-sub">혈당·혈압·체중(복부비만) 위험요인을 줄이는 방향으로 식사 패턴이 잡혀 있는가?</p>
+      </div>
+    </div>
+    <div class="quiz-meta">
+      <span class="quiz-progress-text" id="quiz-progress-text">영역 1 / 8</span>
+      <span class="quiz-answered-count" id="quiz-answered-count">0/8 답변 완료</span>
+    </div>
+
+    <div id="quiz-questions"></div>
+
+    <div class="btn-nav">
+      <button class="btn-prev" id="btn-prev" onclick="prevArea()">← 이전</button>
+      <button class="btn-next" id="btn-next" onclick="nextArea()">다음 영역 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCREEN 3: CHECKUP INPUT ════ -->
+<div class="screen" id="screen-checkup">
+  <div class="container">
+    <div class="checkup-hero">
+      <h2>🔬 건강검진 수치 입력</h2>
+      <p>결과지의 수치를 입력해 주세요<br>
+      없는 항목은 비워두면 됩니다 — 입력된 데이터만으로 분석합니다<br>
+      <small style="opacity:.75">건강검진은 '질병 진단서'가 아닌 '생리학적 힌트'입니다</small></p>
+    </div>
+
+    <div class="checkup-notice">
+      📋 <strong>입력 안내</strong> — 검진 결과지에 없는 추가 검사 수치(hs-CRP·페리틴·MCV·RDW 등)도 있다면 함께 입력하시면 더 정밀한 생활습관 설계에 참고됩니다.<br>
+      ⚠️ 본 분석은 의학적 진단을 대체하지 않습니다.
+    </div>
+
+    <!-- 혈당 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">🍬</div><h3>혈당 축</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>공복혈당 (FBG)</label>
+          <span class="ci-ref">정상 &lt;100 / 회색 100–125 / 주의 ≥126 mg/dL</span>
+          <input type="number" class="ci-input" id="ci-fbg" placeholder="예: 96" oninput="liveCheck(this,'fbg')">
+          <div class="ci-hint" id="ch-fbg"></div>
+        </div>
+        <div class="ci-item">
+          <label>당화혈색소 (HbA1c)</label>
+          <span class="ci-ref">정상 &lt;5.7% / 회색 5.7–6.4% / 주의 ≥6.5%</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-hba1c" placeholder="예: 5.4" oninput="liveCheck(this,'hba1c')">
+          <div class="ci-hint" id="ch-hba1c"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 지질 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">🫀</div><h3>지질 축 — TG/HDL 비율 자동계산</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>중성지방 (TG)</label>
+          <span class="ci-ref">정상 &lt;150 / 회색 150–199 / 주의 ≥200 mg/dL</span>
+          <input type="number" class="ci-input" id="ci-tg" placeholder="예: 130" oninput="liveCheck(this,'tg');calcTgHdl()">
+          <div class="ci-hint" id="ch-tg"></div>
+        </div>
+        <div class="ci-item">
+          <label>HDL 콜레스테롤</label>
+          <span class="ci-ref">남 정상 ≥60 / 주의 &lt;40 · 여 정상 ≥60 / 주의 &lt;50 mg/dL</span>
+          <input type="number" class="ci-input" id="ci-hdl" placeholder="예: 58" oninput="liveCheck(this,'hdl');calcTgHdl()">
+          <div class="ci-hint" id="ch-hdl"></div>
+        </div>
+        <div class="ci-item">
+          <label>LDL 콜레스테롤</label>
+          <span class="ci-ref">정상 &lt;130 / 회색 130–159 / 주의 ≥160 mg/dL</span>
+          <input type="number" class="ci-input" id="ci-ldl" placeholder="예: 112" oninput="liveCheck(this,'ldl')">
+          <div class="ci-hint" id="ch-ldl"></div>
+        </div>
+        <div class="ci-item">
+          <label>총콜레스테롤 (TC)</label>
+          <span class="ci-ref">정상 &lt;200 / 회색 200–239 / 주의 ≥240 mg/dL</span>
+          <input type="number" class="ci-input" id="ci-tc" placeholder="예: 185" oninput="liveCheck(this,'tc')">
+          <div class="ci-hint" id="ch-tc"></div>
+        </div>
+      </div>
+      <div class="nlr-box" id="tg-hdl-box" style="display:none;background:#F0FAF3;border-color:var(--green-mid);">
+        <div class="ratio-box-title" style="color:var(--green-dark);">TG/HDL 비율 (인슐린 저항성 지표)</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="ratio-box-val" id="rv-tg-hdl">—</span>
+          <div style="font-size:10px;color:var(--text-mid);">최적 &lt;1.5 / 경계 1.5–3.0 / 위험 ≥3.0<br>LDL이 정상이어도 이 비율이 높으면 sdLDL 생성 가능성 시사</div>
+        </div>
+        <div class="ratio-box-ref">교재 SEC 2.5 / Reaven GM, Lancet 1988</div>
+        <div class="ci-hint show" id="ch-tg-hdl" style="margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <!-- 혈압 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">💓</div><h3>혈압 축</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>수축기 혈압 (SBP)</label>
+          <span class="ci-ref">정상 &lt;120 / 회색 120–139 / 주의 ≥140 mmHg</span>
+          <input type="number" class="ci-input" id="ci-sbp" placeholder="예: 118" oninput="liveCheck(this,'sbp');calcPP()">
+          <div class="ci-hint" id="ch-sbp"></div>
+        </div>
+        <div class="ci-item">
+          <label>이완기 혈압 (DBP)</label>
+          <span class="ci-ref">정상 &lt;80 / 회색 80–89 / 주의 ≥90 mmHg</span>
+          <input type="number" class="ci-input" id="ci-dbp" placeholder="예: 75" oninput="liveCheck(this,'dbp');calcPP()">
+          <div class="ci-hint" id="ch-dbp"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 체성분 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">⚖️</div><h3>체성분 · 비만</h3></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <select class="ci-input" id="ci-gender" style="flex:1;cursor:pointer;">
+          <option value="m">남성</option><option value="f">여성</option>
+        </select>
+        <input type="number" class="ci-input" id="ci-age" placeholder="나이" style="flex:1;">
+      </div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>BMI (kg/m²)</label>
+          <span class="ci-ref">정상 18.5–22.9 / 과체중 23–24.9 / 비만 ≥25</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-bmi" placeholder="예: 22.5" oninput="liveCheck(this,'bmi')">
+          <div class="ci-hint" id="ch-bmi"></div>
+        </div>
+        <div class="ci-item">
+          <label>허리둘레 (cm)</label>
+          <span class="ci-ref">남 정상 &lt;85 / 주의 ≥90 · 여 정상 &lt;80 / 주의 ≥85</span>
+          <input type="number" class="ci-input" id="ci-waist" placeholder="예: 82" oninput="liveCheck(this,'waist')">
+          <div class="ci-hint" id="ch-waist"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 간 기능 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">🫁</div><h3>간 기능 — ALT/AST 패턴 자동 판별</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>ALT (GPT)</label>
+          <span class="ci-ref">남 &lt;40 / 여 &lt;35 IU/L · ALT 우세 = 지방간 패턴</span>
+          <input type="number" class="ci-input" id="ci-alt" placeholder="예: 28" oninput="liveCheck(this,'alt');calcAltAst()">
+          <div class="ci-hint" id="ch-alt"></div>
+        </div>
+        <div class="ci-item">
+          <label>AST (GOT)</label>
+          <span class="ci-ref">정상 &lt;40 IU/L · AST 우세 = 알코올·근육 손상 패턴</span>
+          <input type="number" class="ci-input" id="ci-ast" placeholder="예: 24" oninput="liveCheck(this,'ast');calcAltAst()">
+          <div class="ci-hint" id="ch-ast"></div>
+        </div>
+        <div class="ci-item">
+          <label>GGT (감마-GT)</label>
+          <span class="ci-ref">정상 &lt;51 / 회색 51–100 IU/L · 알코올·과당·산화스트레스</span>
+          <input type="number" class="ci-input" id="ci-ggt" placeholder="예: 22" oninput="liveCheck(this,'ggt')">
+          <div class="ci-hint" id="ch-ggt"></div>
+        </div>
+      </div>
+      <div id="alt-ast-box" style="display:none;margin-top:10px;border-radius:10px;padding:10px 13px;border-left:3px solid var(--amber);background:#FFFBEB;">
+        <div style="font-size:12px;font-weight:700;color:#92400E;margin-bottom:3px;">ALT/AST 패턴</div>
+        <div style="font-size:13px;font-weight:900;" id="rv-alt-ast">—</div>
+        <div style="font-size:11px;color:var(--text-mid);margin-top:3px;" id="rv-alt-ast-msg"></div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">교재 SEC 2.6 / Mofrad P et al., PubMed 2024 PMID:39253584</div>
+      </div>
+    </div>
+
+    <!-- 혈액·염증 CBC -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">🩸</div><h3>혈액 · CBC · 염증 — NLR 자동계산</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>헤모글로빈 (Hb)</label>
+          <span class="ci-ref">남 13.5–17.5 / 여 12.0–15.5 g/dL</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-hb" placeholder="예: 14.5" oninput="liveCheck(this,'hb')">
+          <div class="ci-hint" id="ch-hb"></div>
+        </div>
+        <div class="ci-item">
+          <label>MCV</label>
+          <span class="ci-ref">정상 80–100 fL · 낮으면 철분결핍, 높으면 B12/엽산결핍</span>
+          <input type="number" class="ci-input" id="ci-mcv" placeholder="예: 88" oninput="liveCheck(this,'mcv')">
+          <div class="ci-hint" id="ch-mcv"></div>
+        </div>
+        <div class="ci-item">
+          <label>RDW (%)</label>
+          <span class="ci-ref">정상 11.5–14.5% · 높으면 조혈 영양 불안정 (가장 예민한 지표)</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-rdw" placeholder="예: 13.2" oninput="liveCheck(this,'rdw')">
+          <div class="ci-hint" id="ch-rdw"></div>
+        </div>
+        <div class="ci-item">
+          <label>호중구 (Neutrophil) %</label>
+          <span class="ci-ref">정상 50–70% · 스트레스·감염 시 상승</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-neut" placeholder="예: 62" oninput="liveCheck(this,'neut');calcNLR()">
+          <div class="ci-hint" id="ch-neut"></div>
+        </div>
+        <div class="ci-item">
+          <label>림프구 (Lymphocyte) %</label>
+          <span class="ci-ref">정상 20–40% · 코르티솔에 파괴 → 수면부족·만성스트레스</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-lymp" placeholder="예: 30" oninput="liveCheck(this,'lymp');calcNLR()">
+          <div class="ci-hint" id="ch-lymp"></div>
+        </div>
+        <div class="ci-item">
+          <label>고감도 CRP (hs-CRP)</label>
+          <span class="ci-ref">저위험 &lt;1.0 / 중위험 1.0–3.0 / 고위험 &gt;3.0 mg/L</span>
+          <input type="number" step="0.01" class="ci-input" id="ci-crp" placeholder="예: 0.5" oninput="liveCheck(this,'crp')">
+          <div class="ci-hint" id="ch-crp"></div>
+        </div>
+        <div class="ci-item">
+          <label>요산 (Uric Acid)</label>
+          <span class="ci-ref">남 &lt;7.0 / 여 &lt;6.0 mg/dL · 과당·맥주·탈수 시 상승</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-uric" placeholder="예: 5.2" oninput="liveCheck(this,'uric')">
+          <div class="ci-hint" id="ch-uric"></div>
+        </div>
+      </div>
+      <div class="nlr-box" id="nlr-box" style="display:none;">
+        <div class="ratio-box-title" style="color:var(--green-dark);">🔢 NLR 자동계산 (호중구% ÷ 림프구%)</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="ratio-box-val" id="rv-nlr">—</span>
+          <div style="font-size:10px;color:var(--text-mid);">건강 1.5–2.0 / 주의 2.0–2.5 / 위험 ≥2.5<br>만성 스트레스·교감신경 항진 지표</div>
+        </div>
+        <div class="ratio-box-ref">교재 SEC 2.3 / Forget P et al., Ann Transl Med 2017 · Zahorec R 2001</div>
+        <div class="ci-hint show" id="ch-nlr" style="margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <!-- 신장 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">🫘</div><h3>신장 축 — BUN/Cr 비율 자동계산</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>BUN (혈중요소질소)</label>
+          <span class="ci-ref">정상 7–20 mg/dL · 고단백·탈수 시 상승</span>
+          <input type="number" step="0.1" class="ci-input" id="ci-bun" placeholder="예: 16" oninput="liveCheck(this,'bun');calcBunCr()">
+          <div class="ci-hint" id="ch-bun"></div>
+        </div>
+        <div class="ci-item">
+          <label>크레아티닌 (Cr)</label>
+          <span class="ci-ref">남 0.7–1.2 / 여 0.5–1.0 mg/dL · 낮으면 근감소증 의심</span>
+          <input type="number" step="0.01" class="ci-input" id="ci-cr" placeholder="예: 0.9" oninput="liveCheck(this,'cr');calcBunCr()">
+          <div class="ci-hint" id="ch-cr"></div>
+        </div>
+        <div class="ci-item">
+          <label>eGFR</label>
+          <span class="ci-ref">정상 ≥90 / G2 60–89 / G3 &lt;60 mL/min</span>
+          <input type="number" class="ci-input" id="ci-egfr" placeholder="예: 95" oninput="liveCheck(this,'egfr')">
+          <div class="ci-hint" id="ch-egfr"></div>
+        </div>
+      </div>
+      <div class="buncr-box" id="bun-cr-box" style="display:none;">
+        <div class="ratio-box-title" style="color:#1e3a5f;">🔢 BUN/Creatinine 비율 자동계산</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="ratio-box-val" id="rv-bun-cr">—</span>
+          <div style="font-size:10px;color:var(--text-mid);">정상 10–20 / 주의 ≥20 = 탈수·고단백·카페인 과다<br>(Cr 정상이면 신장 자체 이상이 아닌 생활습관 신호)</div>
+        </div>
+        <div class="ratio-box-ref">교재 SEC 2.7 / Wakefield B et al., PMID:14984614</div>
+        <div class="ci-hint show" id="ch-bun-cr" style="margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <!-- 기타 -->
+    <div class="checkup-section">
+      <div class="checkup-sec-title"><div class="cs-icon">🔩</div><h3>기타 지표</h3></div>
+      <div class="checkup-grid">
+        <div class="ci-item">
+          <label>TSH (갑상선자극호르몬)</label>
+          <span class="ci-ref">정상 0.4–4.0 / 이상 &gt;4.0 또는 &lt;0.4 mIU/L</span>
+          <input type="number" step="0.01" class="ci-input" id="ci-tsh" placeholder="예: 2.1" oninput="liveCheck(this,'tsh')">
+          <div class="ci-hint" id="ch-tsh"></div>
+        </div>
+        <div class="ci-item">
+          <label>비타민 D (25-OH)</label>
+          <span class="ci-ref">충분 ≥30 / 부족 20–29 / 결핍 &lt;20 ng/mL</span>
+          <input type="number" class="ci-input" id="ci-vitd" placeholder="예: 32" oninput="liveCheck(this,'vitd')">
+          <div class="ci-hint" id="ch-vitd"></div>
+        </div>
+        <div class="ci-item">
+          <label>페리틴 (철 저장)</label>
+          <span class="ci-ref">남 12–300 / 여 12–150 ng/mL</span>
+          <input type="number" class="ci-input" id="ci-ferritin" placeholder="예: 85" oninput="liveCheck(this,'ferritin')">
+          <div class="ci-hint" id="ch-ferritin"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-analyze" onclick="analyzeCheckup()">🔬 생활습관 설계 분석 시작</button>
+    <button class="btn-skip-checkup" onclick="skipCheckup()">건강검진 없이 습관 결과만 보기 →</button>
+  </div>
+</div>
+
+<!-- ════ SCREEN 4: RESULT ════ -->
+<div class="screen" id="screen-result">
+  <div class="container">
+
+    <div class="result-hero">
+      <div class="total-score" id="result-total">0</div>
+      <div class="total-label">/ 256점</div>
+      <div class="result-grade" id="result-grade-text">분석 중...</div>
+      <div class="result-msg" id="result-msg"></div>
+    </div>
+
+    <div class="name-input-box">
+      <label for="userName">👤 이름을 입력하시면 맞춤 결과를 확인할 수 있어요</label>
+      <input type="text" id="userName" placeholder="이름 입력 (선택사항)" maxlength="10" oninput="updateName()">
+    </div>
+
+    <div class="chart-box">
+      <h3>🕸️ 나의 생활습관 레이더 차트</h3>
+      <canvas id="radarCanvas" width="320" height="320"></canvas>
+    </div>
+
+    <div id="teaserGate" style="display:none;background:linear-gradient(135deg,#7C3AED,#5B21B6);border-radius:16px;padding:26px 22px;text-align:center;color:#fff;margin-bottom:18px;">
+      <div style="font-size:32px;margin-bottom:8px;">🔒</div>
+      <h3 style="font-size:18px;margin-bottom:8px;">약점 순위와 맞춤 액션까지 확인하기</h3>
+      <p style="font-size:13px;opacity:.9;line-height:1.6;margin-bottom:16px;">간단한 정보만 입력하면, AI가 검진수치와 습관 점수를 통합 분석한 프리미엄 리포트로 바로 확인하실 수 있어요.</p>
+      <button class="btn-analyze" onclick="openPremiumModal()" style="background:#fff;color:#5B21B6;">
+        🔓 내 약점 순위 · 맞춤 액션 확인하기
+      </button>
+      <p class="time-note" style="color:rgba(255,255,255,.8);">검진수치와 생활습관을 함께 살펴보는 프리미엄 통합분석</p>
+    </div>
+
+    <!-- 건강검진 결과 (입력 시만 표시) -->
+    <div id="checkup-result-block" style="display:none;">
+      <div class="checkup-result-section">
+        <div class="crs-header">
+          <h3>🔬 건강검진 회색지대 분석</h3>
+          <p>수치가 질병과 정상 사이의 경계를 넘고 있는 신호를 찾았습니다</p>
+        </div>
+        <div class="crs-body" id="crs-body"></div>
+      </div>
+      <div class="integrated-section">
+        <div class="is-header">
+          <h3>🧭 검진 수치 × 생활습관 연결 설계</h3>
+          <p>내 건강데이터와 취약 영역을 연결한 생활습관 설계 방향</p>
+        </div>
+        <div class="is-body" id="is-body"></div>
+      </div>
+    </div>
+
+    <div class="weak-rank-section">
+      <div class="weak-rank-header">
+        <h3>🚨 집중 개선이 필요한 최약점 영역 TOP 3</h3>
+        <p>점수가 낮을수록 만성질환 위험이 높은 영역입니다</p>
+      </div>
+      <div class="weak-rank-items" id="weak-rank-items"></div>
+    </div>
+
+    <div class="score-table">
+      <div class="score-table-header">📊 8영역 × 4세부차원 점수 분석</div>
+      <div id="score-rows"></div>
+    </div>
+
+    <div class="area-insight-section">
+      <div class="area-insight-header">
+        <h3>🧭 8영역 자동 결과 해석</h3>
+        <p>각 영역 점수를 바탕으로 강점·주의·취약 상태를 자동 분류하고, 바로 실천할 행동 제안을 함께 보여줍니다.</p>
+      </div>
+      <div class="area-insight-grid" id="area-insight-grid"></div>
+    </div>
+
+    <div class="action-section">
+      <h3>⚡ 최약점 영역 — 오늘부터 시작할 생활습관 1가지</h3>
+      <div id="action-items"></div>
+    </div>
+
+    <div class="evidence-section">
+      <div class="evidence-toggle" id="ev-toggle" onclick="toggleEvidence()">
+        <h3>📖 질문 근거 자료 (국내외 가이드라인 & 연구)</h3>
+        <span class="ev-arrow">▼</span>
+      </div>
+      <div class="evidence-content" id="ev-content"></div>
+    </div>
+
+
+    <div class="cta-section">
+      <div class="cta-title">
+        <h3>이제 나의 무너진 한 칸을 채우러 가기</h3>
+        <p id="cta-subtitle">가장 약한 영역부터, 지금 바로 시작해보세요</p>
+      </div>
+      <div class="cta-cards">
+        <a href="https://open.kakao.com/me/healthteather" target="_blank" rel="noopener noreferrer" class="cta-card cta-1">
+          <div class="cta-icon">💬</div>
+          <div class="cta-text">
+            <div class="cta-tag">Personalized</div>
+            <h4>1:1 건강기능식품·프로그램 상담</h4>
+            <p>건강기능식품 추천 · 다이어트 · 대사증후군 · 맞춤 건강 프로그램</p>
+          </div>
+          <div class="cta-arrow">›</div>
+        </a>
+        <a href="https://pf.kakao.com/_HlPnn" target="_blank" rel="noopener noreferrer" class="cta-card cta-2">
+          <div class="cta-icon">📖</div>
+          <div class="cta-text">
+            <div class="cta-tag">Self-directed</div>
+            <h4>건강칼럼 구독 신청</h4>
+            <p>근거 기반 건강 지식으로 내 몸을 지키세요</p>
+          </div>
+          <div class="cta-arrow">›</div>
+        </a>
+        <a href="https://open.kakao.com/o/pYYxjLpi" target="_blank" rel="noopener noreferrer" class="cta-card cta-3">
+          <div class="cta-icon">🌿</div>
+          <div class="cta-text">
+            <div class="cta-tag">Community</div>
+            <h4>우주건강실천인증방</h4>
+            <p>함께 실천하고 인증하는 건강 커뮤니티</p>
+          </div>
+          <div class="cta-arrow">›</div>
+        </a>
+      </div>
+    </div>
+
+    <div style="margin-top:8px;">
+      <button class="share-btn" onclick="shareKakao()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.485 1.39 4.688 3.5 6.07L4.5 21l4.93-2.47A11.3 11.3 0 0012 18c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"/></svg>
+        카카오톡으로 공유하기
+      </button>
+      <button class="share-link-btn" onclick="copyLink()">
+        🔗 링크 복사하기
+      </button>
+    </div>
+    <div class="footer-note">
+      © 2025 건강이음센터. All Rights Reserved.<br>
+      본 진단은 생활 속 행동습관의 취약영역을 점검하는 도구이며, 의학적 진단을 대체하지 않습니다.
+    </div>
+
+    <div style="margin-top:12px;padding:13px 15px;background:#F0FAF3;border-radius:12px;
+      border-left:3px solid var(--green-mid);font-size:10px;color:var(--text-mid);line-height:1.8;">
+      © 2026 건강이음센터 (올바른 보건쌤). All Rights Reserved.<br>
+      본 프로그램의 8영역 진단 문항, 검진 지표 연계 알고리즘 및 결과 해석 텍스트는 저작권법의 보호를 받는 독창적 저작물이며,
+      무단 복제, 전재, 배포 및 상업적 도용을 금합니다. (저작권등록번호 C-2026-026168)<br>
+      기업·기관 사용 문의: ufoacademy@naver.com
+    </div>
+
+    <div style="margin-top:18px;">
+      <button onclick="resetQuiz()" style="width:100%;padding:12px;background:#fff;
+        border:2px solid #E5EDE8;border-radius:12px;color:var(--text-mid);
+        font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🔄 처음부터 다시하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 카카오 SDK -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" crossorigin="anonymous"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ════════════════════════════════════════
+//  DATA — 8영역 × 4세부차원 × 2문항 = 64문항
+// ════════════════════════════════════════
+const AREAS = [
+  {
+    "id": 1,
+    "icon": "🍎",
+    "name": "식(食)",
+    "sub": "만성질환 예방 식사 습관",
+    "focus": "최근 2주 동안의 식사 패턴이 혈당·혈압·체중 위험을 줄이는 방향으로 유지되고 있는가?",
+    "color": "#16A34A",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "혈당을 덜 흔드는 식사",
+        "ref": "채소·통곡물 중심 식사는 혈당 관리와 심혈관 건강에 도움",
+        "refDetail": "<strong>① WHO Healthy Diet</strong><br>채소·과일을 충분히 먹고 정제 탄수화물·자유당을 줄이는 식사가 만성질환 예방의 기본입니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/healthy-diet\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Healthy Diet</a><br><br><strong>② AHA Life's Essential 8</strong><br>통곡물·채소·과일·콩류 중심의 식사 패턴은 심혈관 건강 점수를 높이는 핵심 요소입니다. <a href=\"https://www.heart.org/en/healthy-living/healthy-lifestyle/lifes-essential-8\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Life's Essential 8</a>",
+        "questions": [
+          "나는 채소 반찬이나 쌈과 함께 식사한다.",
+          "나는 흰쌀밥 대신 통곡물, 잡곡, 고구마·감자 등을 선택한다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "나트륨·당 음료 줄이기",
+        "ref": "나트륨과 첨가당을 줄이는 습관은 혈압·체중 관리에 중요",
+        "refDetail": "<strong>① WHO Healthy Diet</strong><br>소금은 하루 5g 미만, 자유당은 총 에너지의 10% 미만으로 줄일 것을 권고합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/healthy-diet\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Healthy Diet</a><br><br><strong>② CDC / FDA Nutrition Facts Label</strong><br>영양성분표를 활용해 나트륨·첨가당이 많은 식품을 줄이는 것이 도움이 됩니다. <a href=\"https://www.cdc.gov/healthy-weight-growth/healthy-eating/nutrition-label.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Nutrition Label</a> · <a href=\"https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label\" target=\"_blank\" rel=\"noopener noreferrer\">FDA Nutrition Facts</a>",
+        "questions": [
+          "나는 국물 음식을 먹을 때 국물을 적게 먹거나 남긴다.",
+          "나는 탄산음료, 과일 주스, 가당 음료 대신 물이나 무가당 음료를 선택한다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "과식·야식 조절",
+        "ref": "규칙적이고 절제된 식사는 체중·복부비만 예방에 도움",
+        "refDetail": "<strong>① CDC Chronic Disease Prevention</strong><br>건강한 식사와 체중 관리는 당뇨병·심장병·비만 예방의 핵심입니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Chronic Disease Prevention</a><br><br><strong>② AHA Life's Essential 8</strong><br>체중 관리는 식습관·활동·수면과 연결되며, 반복적인 과식·야식 습관을 줄이는 생활 조절이 중요합니다. <a href=\"https://www.heart.org/en/healthy-living/healthy-lifestyle/lifes-essential-8\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Life's Essential 8</a>",
+        "questions": [
+          "나는 밤 9시 이후에 야식을 먹지 않는다.",
+          "나는 배가 부르기 전에 식사를 멈춘다(80% 포만감)."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "식사의 질 높이기",
+        "ref": "가공식품을 줄이고 단백질·섬유질을 포함한 식사가 권장됨",
+        "refDetail": "<strong>① WHO Healthy Diet</strong><br>콩류·견과류·채소·과일·통곡물을 포함하고 고지방·고당·고염 가공식품을 줄이는 식사를 권고합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/healthy-diet\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Healthy Diet</a><br><br><strong>② AHA Life's Essential 8</strong><br>생선·콩·두부·달걀·살코기 등 질 좋은 단백질과 자연식품 중심의 선택이 심혈관 건강에 유리합니다. <a href=\"https://www.heart.org/en/healthy-living/healthy-lifestyle/lifes-essential-8\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Life's Essential 8</a>",
+        "questions": [
+          "나는 패스트푸드, 가공육, 인스턴트식품을 주 2회 미만으로 먹는다.",
+          "나는 매 식사마다 단백질 식품(두부·생선·달걀·콩류·살코기)을 섭취한다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "icon": "🏃",
+    "name": "동(動)",
+    "sub": "신체활동·운동 습관",
+    "focus": "최근 2주 동안의 활동량이 만성질환 예방에 필요한 유산소·근력·일상활동 기준에 가까운가?",
+    "color": "#0EA5E9",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "유산소 활동",
+        "ref": "성인은 주당 150분 이상 중강도 신체활동 권장",
+        "refDetail": "<strong>① WHO Physical Activity</strong><br>성인은 주당 150~300분의 중강도 또는 75~150분의 고강도 활동을 권고합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/physical-activity\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Physical Activity</a><br><br><strong>② CDC Benefits of Physical Activity</strong><br>규칙적인 유산소 운동은 심장병·제2형 당뇨·고혈압 위험을 낮춥니다. <a href=\"https://www.cdc.gov/physical-activity-basics/benefits/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Benefits of Physical Activity</a>",
+        "questions": [
+          "나는 숨이 약간 찰 정도의 빠른 걷기, 자전거, 수영 등을 30분 이상 한다.",
+          "나는 출퇴근·이동 시 걷기나 자전거를 활용하는 등 일상에서 몸을 움직인다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "근력과 근육 유지",
+        "ref": "근력운동은 대사 건강과 기능 유지에 필요",
+        "refDetail": "<strong>① WHO Physical Activity</strong><br>성인은 주 2일 이상 주요 근육군을 사용하는 근력 강화 활동을 권고합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/physical-activity\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Physical Activity</a><br><br><strong>② AHA Life's Essential 8</strong><br>유산소 활동과 함께 근력 활동을 병행할수록 전반적 심혈관 건강이 좋아집니다. <a href=\"https://www.heart.org/en/healthy-living/healthy-lifestyle/lifes-essential-8\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Life's Essential 8</a>",
+        "questions": [
+          "나는 푸시업, 스쿼트, 덤벨 운동 등 근력 운동을 주 2회 이상 한다.",
+          "나는 엘리베이터 대신 계단을 이용하거나 멀리 주차하는 등 근육을 쓴다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "오래 앉아있기 줄이기",
+        "ref": "좌식 시간을 줄이고 자주 움직이는 것이 중요",
+        "refDetail": "<strong>① WHO Physical Activity</strong><br>신체활동을 늘리는 것뿐 아니라 오래 앉아 있는 시간을 줄일 것을 권장합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/physical-activity\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Physical Activity</a><br><br><strong>② CDC Benefits of Physical Activity</strong><br>짧게라도 자주 움직이는 습관은 혈당·혈압·기분 관리에 도움이 됩니다. <a href=\"https://www.cdc.gov/physical-activity-basics/benefits/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Benefits of Physical Activity</a>",
+        "questions": [
+          "나는 1시간에 한 번 이상 일어나 스트레칭하거나 잠깐 걷는다.",
+          "나는 식사 후 10분 이상 가볍게 걷는다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "유연성·활동 점검",
+        "ref": "스트레칭과 자기기록은 활동 지속에 도움",
+        "refDetail": "<strong>① CDC Benefits of Physical Activity</strong><br>신체활동은 유연성·균형·근력·기분 개선에 폭넓게 도움이 됩니다. <a href=\"https://www.cdc.gov/physical-activity-basics/benefits/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Benefits of Physical Activity</a><br><br><strong>② AHA Life's Essential 8</strong><br>스스로 활동량을 확인하고 생활 속 움직임을 늘리는 것이 심혈관 건강 관리에 유익합니다. <a href=\"https://www.heart.org/en/healthy-living/healthy-lifestyle/lifes-essential-8\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Life's Essential 8</a>",
+        "questions": [
+          "나는 스트레칭이나 관절 풀기를 매일 한다.",
+          "나는 하루 걸음 수, 운동 시간 등 활동량을 확인하고 기록한다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "icon": "😴",
+    "name": "휴(休)",
+    "sub": "수면·회복 습관",
+    "focus": "최근 2주 동안의 수면 습관이 회복과 대사 건강을 돕는 방향으로 유지되고 있는가?",
+    "color": "#6366F1",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "수면 시간과 규칙성",
+        "ref": "성인은 대부분 매일 7시간 이상 수면이 권장됨",
+        "refDetail": "<strong>① CDC Sleep</strong><br>충분한 수면은 당뇨병·심장병·비만·우울 위험을 낮추는 데 중요합니다. <a href=\"https://www.cdc.gov/sleep/about/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Sleep</a><br><br><strong>② AASM Adult Sleep Duration Health Advisory</strong><br>성인은 건강을 위해 정기적으로 7시간 이상 자는 것이 권장됩니다. <a href=\"https://aasm.org/advocacy/position-statements/adult-sleep-duration-health-advisory/\" target=\"_blank\" rel=\"noopener noreferrer\">AASM Advisory</a>",
+        "questions": [
+          "나는 하루 7시간 이상 수면을 취한다.",
+          "나는 주말에도 평일과 비슷한 시간에 기상한다(1~2시간 이내)."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "잠들기 전 생활 조절",
+        "ref": "취침 전 화면·카페인·과식을 줄이는 것이 수면 위생에 도움",
+        "refDetail": "<strong>① CDC Sleep</strong><br>규칙적 수면 습관과 취침 전 환경 조절은 수면의 질 향상에 도움이 됩니다. <a href=\"https://www.cdc.gov/sleep/about/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Sleep</a><br><br><strong>② CDC Physical Activity & Sleep</strong><br>수면은 다른 건강 행동과 연결되며, 취침 전 자극을 줄이는 생활습관이 중요합니다. <a href=\"https://www.cdc.gov/physical-activity-education/staying-healthy/sleep.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Sleep & Activity</a>",
+        "questions": [
+          "나는 취침 1시간 전부터 스마트폰·TV 화면을 사용하지 않는다.",
+          "나는 저녁 6시 이후 카페인 음료와 과식을 피한다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "수면 환경과 이완",
+        "ref": "어둡고 조용한 환경과 이완 루틴은 회복에 도움",
+        "refDetail": "<strong>① CDC Sleep</strong><br>침실 환경을 어둡고 조용하고 편안하게 유지하는 것이 권장됩니다. <a href=\"https://www.cdc.gov/sleep/about/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Sleep</a><br><br><strong>② CDC Emotional Well-being</strong><br>호흡·이완·마음 돌봄 같은 회복 활동은 스트레스 완화와 수면 준비에 도움이 됩니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a>",
+        "questions": [
+          "나는 침실을 어둡고 조용하며 시원하게 유지한다.",
+          "나는 취침 전 명상, 독서, 가벼운 스트레칭 등 이완 루틴이 있다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "낮 동안의 회복 리듬",
+        "ref": "낮 활동과 아침빛 노출은 수면 리듬 유지에 도움",
+        "refDetail": "<strong>① CDC Sleep</strong><br>낮 동안의 규칙적인 활동과 수면-각성 리듬 유지가 중요합니다. <a href=\"https://www.cdc.gov/sleep/about/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Sleep</a><br><br><strong>② WHO Physical Activity</strong><br>낮의 신체활동은 건강 증진과 회복 리듬 형성에 유리합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/physical-activity\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Physical Activity</a>",
+        "questions": [
+          "나는 낮 동안 햇빛을 쬐는 시간을 만든다.",
+          "나는 낮잠을 30분 이내로 제한하여 밤 수면을 방해하지 않는다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "icon": "🧠",
+    "name": "심(心)",
+    "sub": "스트레스·마음 건강 습관",
+    "focus": "최근 2주 동안 나는 스트레스에 끌려가기보다 몸과 마음을 보호하는 회복 행동을 실천했는가?",
+    "color": "#F59E0B",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "스트레스 멈춤 습관",
+        "ref": "스트레스 신호를 알아차리고 반응을 늦추는 연습이 도움",
+        "refDetail": "<strong>① CDC Living With Stress</strong><br>스트레스를 인식하고 잠시 멈추고 대처하는 습관은 정서적 건강에 중요합니다. <a href=\"https://www.cdc.gov/mental-health/living-with/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Living With Stress</a><br><br><strong>② NCCIH Stress</strong><br>만성 스트레스는 건강에 악영향을 줄 수 있어 호흡·명상·움직임 등 관리 전략이 권장됩니다. <a href=\"https://www.nccih.nih.gov/health/stress\" target=\"_blank\" rel=\"noopener noreferrer\">NCCIH Stress</a>",
+        "questions": [
+          "나는 스트레스를 느낄 때 1~2분 심호흡이나 명상을 한다.",
+          "나는 감정이 요동칠 때 즉시 먹거나 마시지 않고 잠시 멈춘다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "회복 행동 실천",
+        "ref": "짧은 회복 행동도 마음 건강에 도움",
+        "refDetail": "<strong>① CDC Emotional Well-being</strong><br>짧은 산책, 호흡, 감사, 휴식 같은 실천은 감정 조절과 회복감 향상에 도움을 줍니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a><br><br><strong>② CDC Living With Stress</strong><br>규칙적인 휴식과 자기돌봄은 스트레스 관리 전략으로 권장됩니다. <a href=\"https://www.cdc.gov/mental-health/living-with/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Living With Stress</a>",
+        "questions": [
+          "나는 스트레스 해소를 위해 산책, 스트레칭, 음악 감상 등을 실천한다.",
+          "나는 하루 중 아무것도 하지 않는 쉬는 시간을 의도적으로 만든다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "도움 요청과 감정 나누기",
+        "ref": "정서적 지지는 스트레스 완충에 도움",
+        "refDetail": "<strong>① CDC Social Connectedness</strong><br>주변과의 연결은 스트레스, 수면, 전반적 건강에 긍정적 영향을 줍니다. <a href=\"https://www.cdc.gov/social-connectedness/improving/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Social Connectedness</a><br><br><strong>② CDC Emotional Well-being</strong><br>혼자 버티기보다 믿을 수 있는 사람과 감정을 나누는 것이 권장됩니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a>",
+        "questions": [
+          "나는 힘들 때 가족이나 친구와 소통하며 마음을 나눈다.",
+          "나는 감정을 솔직하게 표현하고 필요할 때 도움을 요청한다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "스트레스 속 건강루틴 지키기",
+        "ref": "스트레스 상황에서도 기본 건강루틴 유지가 중요",
+        "refDetail": "<strong>① CDC Living With Stress</strong><br>수면·식사·운동을 무너뜨리지 않는 기본 루틴 유지가 스트레스 관리의 핵심입니다. <a href=\"https://www.cdc.gov/mental-health/living-with/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Living With Stress</a><br><br><strong>② NCCIH Stress</strong><br>스트레스 관리는 마음뿐 아니라 몸의 건강행동과 함께 다뤄야 효과적입니다. <a href=\"https://www.nccih.nih.gov/health/stress\" target=\"_blank\" rel=\"noopener noreferrer\">NCCIH Stress</a>",
+        "questions": [
+          "나는 바쁘거나 힘들 때도 기본적인 생활 루틴(식사·수면·운동)을 유지한다.",
+          "나는 감사 일기, 명상, 기도 등으로 마음을 정리하는 습관이 있다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "icon": "🌿",
+    "name": "환(環)",
+    "sub": "건강을 돕는 생활환경",
+    "focus": "최근 2주 동안 내 주변 환경은 건강한 선택을 더 쉽게 만들고, 해로운 선택은 줄이도록 돕고 있는가?",
+    "color": "#10B981",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "무연·절주 환경",
+        "ref": "흡연 회피와 절주는 만성질환 예방의 핵심",
+        "refDetail": "<strong>① WHO Tobacco</strong><br>담배와 간접흡연 노출을 줄이는 것은 심혈관질환·암·호흡기질환 예방의 핵심입니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/tobacco\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Tobacco</a><br><br><strong>② WHO Alcohol / CDC Moderate Drinking</strong><br>알코올은 건강위험과 관련되며, 줄일수록 더 안전합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/alcohol\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Alcohol</a> · <a href=\"https://www.cdc.gov/alcohol/about-alcohol-use/moderate-alcohol-use.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Moderate Drinking</a>",
+        "questions": [
+          "나는 담배 연기가 있는 환경(간접흡연)을 적극적으로 피한다.",
+          "나는 술을 마시지 않거나 마시더라도 주 1회, 2잔 이내로 제한한다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "건강한 먹거리 배치",
+        "ref": "보이는 환경이 실제 선택을 바꿈",
+        "refDetail": "<strong>① CDC Chronic Disease Prevention</strong><br>건강한 식생활 환경을 만들면 좋은 선택을 더 쉽게 지속할 수 있습니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Chronic Disease Prevention</a><br><br><strong>② WHO Healthy Diet</strong><br>과일·채소·덜 가공된 식품 중심 환경이 만성질환 예방에 유리합니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/healthy-diet\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Healthy Diet</a>",
+        "questions": [
+          "나는 냉장고·식탁에 과일, 견과류, 물이 쉽게 보이도록 배치한다.",
+          "나는 가공식품, 과자, 야식거리를 눈에 잘 안 띄는 곳에 두거나 구입하지 않는다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "움직이기 쉬운 환경",
+        "ref": "생활환경을 바꾸면 활동량을 늘리기 쉬워짐",
+        "refDetail": "<strong>① WHO Physical Activity</strong><br>활동 친화적인 환경은 신체활동 증가에 도움이 됩니다. <a href=\"https://www.who.int/news-room/fact-sheets/detail/physical-activity\" target=\"_blank\" rel=\"noopener noreferrer\">WHO Physical Activity</a><br><br><strong>② CDC Benefits of Physical Activity</strong><br>작은 환경 조정도 규칙적인 움직임을 촉진합니다. <a href=\"https://www.cdc.gov/physical-activity-basics/benefits/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Benefits of Physical Activity</a>",
+        "questions": [
+          "나는 운동기구나 운동화를 바로 꺼내 쓸 수 있는 곳에 배치한다.",
+          "나는 걷기 좋은 동선(공원, 계단)을 일상 이동 경로에 포함시킨다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "공기·자세·작업 환경",
+        "ref": "쾌적한 작업·생활 환경은 건강행동 유지에 도움",
+        "refDetail": "<strong>① CDC Chronic Disease Prevention</strong><br>생활환경과 일상 습관은 만성질환 위험요인과 연결됩니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Chronic Disease Prevention</a><br><br><strong>② CDC Sleep / Well-being</strong><br>환기, 빛, 자세, 화면 노출 같은 환경 관리도 건강 루틴 유지에 영향을 줍니다. <a href=\"https://www.cdc.gov/sleep/about/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Sleep</a> · <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a>",
+        "questions": [
+          "나는 실내 환기를 하루 2회 이상 하거나 공기 질을 관리한다.",
+          "나는 작업 중 1시간마다 스트레칭하거나 눈 휴식(20-20-20 규칙)을 실천한다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "icon": "🤝",
+    "name": "연(連)",
+    "sub": "사회적 연결·예방적 도움받기",
+    "focus": "최근 2주 동안 나는 혼자 버티기보다 사람·전문가·공적 자원을 연결해 건강을 지키고 있는가?",
+    "color": "#EF4444",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "가족·친구 지지",
+        "ref": "사회적 연결은 건강행동 지속과 만성질환 위험 감소에 도움",
+        "refDetail": "<strong>① CDC Social Connectedness</strong><br>작은 연결 행동도 스트레스·수면·건강행동 유지에 긍정적 영향을 줍니다. <a href=\"https://www.cdc.gov/social-connectedness/improving/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Social Connectedness</a><br><br><strong>② CDC Social Connectedness Risk Factors</strong><br>고립과 외로움은 심장병·뇌졸중·제2형 당뇨 위험과 관련됩니다. <a href=\"https://www.cdc.gov/social-connectedness/risk-factors/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Social Connectedness Risk Factors</a>",
+        "questions": [
+          "나는 나의 건강 목표를 가족이나 친구에게 공유하고 지지를 요청한다.",
+          "나는 함께 걷기, 건강 요리 등 건강 행동을 주변 사람과 함께 실천한다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "예방적 검진·상담 연결",
+        "ref": "정기 검진과 이상 소견 후속조치는 예방의 핵심",
+        "refDetail": "<strong>① CDC Preventive Care</strong><br>정기 검진, 예방접종, 치과 검진, 이상 결과 확인은 만성질환 예방과 조기 발견에 중요합니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/preventive-care.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Preventive Care</a><br><br><strong>② CDC Chronic Disease Prevention</strong><br>예방적 의료 이용은 위험요인 관리에 직접 연결됩니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Chronic Disease Prevention</a>",
+        "questions": [
+          "나는 정기 건강검진과 예방접종 시기를 확인하고 챙긴다.",
+          "나는 몸에 이상 신호가 생기면 방치하지 않고 전문가 상담을 받는다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "건강 자원 활용",
+        "ref": "건강 교육·지역 자원 활용은 실천 유지에 도움",
+        "refDetail": "<strong>① CDC Social Connectedness</strong><br>지역사회 모임과 연결은 건강과 웰빙 증진에 도움이 됩니다. <a href=\"https://www.cdc.gov/social-connectedness/improving/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Social Connectedness</a><br><br><strong>② CDC Preventive Care</strong><br>신뢰할 수 있는 건강 자원과 서비스를 적극적으로 활용하는 것이 권장됩니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/preventive-care.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Preventive Care</a>",
+        "questions": [
+          "나는 지역사회 건강 강좌, 프로그램, 건강지원센터 등을 활용한다.",
+          "나는 건강 문제가 생기면 전문가나 공신력 있는 기관에서 정보를 찾는다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "함께 지속하기",
+        "ref": "함께 확인하고 격려받는 구조가 행동 지속에 도움",
+        "refDetail": "<strong>① CDC Social Connectedness</strong><br>서로 확인하고 돕는 관계는 건강 행동의 지속 가능성을 높입니다. <a href=\"https://www.cdc.gov/social-connectedness/improving/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Social Connectedness</a><br><br><strong>② CDC Emotional Well-being</strong><br>지지 관계는 감정적 회복과 행동 실천 모두에 긍정적입니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a>",
+        "questions": [
+          "나는 누군가와 건강 실천 결과를 확인하고 서로 격려한다.",
+          "나는 내 건강한 선택으로 주변 사람의 환경에 긍정적 영향을 미친다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "icon": "📚",
+    "name": "지(智)",
+    "sub": "건강정보 활용·자기관리",
+    "focus": "최근 2주 동안 나는 건강정보를 제대로 읽고, 내 수치를 확인하며, 실제 행동계획으로 연결했는가?",
+    "color": "#059669",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "영양표시 읽기",
+        "ref": "영양성분표 확인은 나트륨·당·포화지방 관리에 도움",
+        "refDetail": "<strong>① CDC Nutrition Facts Label</strong><br>영양성분표를 보면 나트륨·첨가당·지방을 비교해 더 건강한 선택을 할 수 있습니다. <a href=\"https://www.cdc.gov/healthy-weight-growth/healthy-eating/nutrition-label.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Nutrition Label</a><br><br><strong>② FDA Nutrition Facts</strong><br>%영양성분기준치와 1회 제공량을 함께 보는 습관이 중요합니다. <a href=\"https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label\" target=\"_blank\" rel=\"noopener noreferrer\">FDA Nutrition Facts</a>",
+        "questions": [
+          "나는 식품을 구입할 때 당·나트륨·포화지방 함량을 확인한다.",
+          "나는 1회 제공량과 총 용량을 구분하여 실제 섭취량을 파악한다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "정보 출처 확인",
+        "ref": "건강정보는 출처와 근거 확인이 필요",
+        "refDetail": "<strong>① CDC Food Literacy Research Summary</strong><br>건강한 선택에는 정보를 이해하고 적용하는 능력이 필요합니다. <a href=\"https://www.cdc.gov/health-literacy/php/research-summaries/food-literacy.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Food Literacy</a><br><br><strong>② FDA / CDC 건강정보 자료</strong><br>광고·후기보다 공식기관, 전문가, 근거자료를 우선 확인하는 습관이 중요합니다. <a href=\"https://www.fda.gov/food/nutrition-facts-label/how-understand-and-use-nutrition-facts-label\" target=\"_blank\" rel=\"noopener noreferrer\">FDA Nutrition Facts</a> · <a href=\"https://www.cdc.gov/healthy-weight-growth/healthy-eating/nutrition-label.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Nutrition Label</a>",
+        "questions": [
+          "나는 건강 정보를 접할 때 출처와 근거를 확인한다.",
+          "나는 광고나 SNS보다 공식 기관(질병관리청, 학회 등)의 정보를 우선 신뢰한다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "내 수치 확인과 기록",
+        "ref": "혈압·혈당·체중 같은 지표를 확인하는 습관이 자기관리에 도움",
+        "refDetail": "<strong>① AHA Home Blood Pressure Monitoring</strong><br>가정혈압 측정과 기록은 혈압 관리에 도움이 됩니다. <a href=\"https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings/monitoring-your-blood-pressure-at-home\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Home BP Monitoring</a><br><br><strong>② CDC Preventive Care</strong><br>검진 결과를 확인하고 필요한 후속조치를 하는 것이 중요합니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/preventive-care.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Preventive Care</a>",
+        "questions": [
+          "나는 나의 혈압, 공복혈당, 체중 등 건강 수치를 알고 있다.",
+          "나는 건강 수치 변화를 앱이나 수첩에 기록하여 추적한다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "실천 계획 세우기",
+        "ref": "구체적인 목표와 점검이 행동변화에 유리",
+        "refDetail": "<strong>① CDC Chronic Disease Prevention</strong><br>만성질환 예방은 정보를 아는 것에서 끝나지 않고 식사·활동·검진 실천으로 연결되어야 합니다. <a href=\"https://www.cdc.gov/chronic-disease/prevention/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Chronic Disease Prevention</a><br><br><strong>② AHA Life's Essential 8</strong><br>자신의 건강지표를 알고 생활습관 목표를 정해 관리하는 것이 권장됩니다. <a href=\"https://www.heart.org/en/healthy-living/healthy-lifestyle/lifes-essential-8\" target=\"_blank\" rel=\"noopener noreferrer\">AHA Life's Essential 8</a>",
+        "questions": [
+          "나는 \"운동을 해야지\"가 아니라 \"월수금 7시, 20분 걷기\"처럼 구체적 계획을 세운다.",
+          "나는 건강 실천을 방해하는 상황을 미리 예상하고 대응 계획을 세운다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "icon": "🎨",
+    "name": "락(樂)",
+    "sub": "회복형 여가·삶의 활력",
+    "focus": "최근 2주 동안의 여가가 몸을 더 소모시키기보다 회복·활력·삶의 질을 높이는 방향이었는가?",
+    "color": "#7C3AED",
+    "dims": [
+      {
+        "letter": "A",
+        "name": "움직이는 여가",
+        "ref": "활동적인 여가는 신체·정신 건강에 도움",
+        "refDetail": "<strong>① CDC Benefits of Physical Activity</strong><br>걷기·자전거·댄스 같은 활동은 몸뿐 아니라 기분과 수면에도 도움이 됩니다. <a href=\"https://www.cdc.gov/physical-activity-basics/benefits/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Benefits of Physical Activity</a><br><br><strong>② CDC Boost Brain Health</strong><br>신체활동은 뇌 건강과 스트레스 완화에도 이점이 있습니다. <a href=\"https://www.cdc.gov/physical-activity/features/boost-brain-health.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Brain Health</a>",
+        "questions": [
+          "나는 등산, 자전거, 걷기, 댄스 등 활동적인 여가 활동을 즐긴다.",
+          "나는 야외 활동과 햇빛 쬐기를 주 2회 이상 실천한다."
+        ]
+      },
+      {
+        "letter": "B",
+        "name": "화면 밖 회복 여가",
+        "ref": "스크린 중심 여가만이 아니라 회복형 활동이 필요",
+        "refDetail": "<strong>① CDC Emotional Well-being</strong><br>회복을 돕는 여가와 휴식은 정서적 웰빙 향상에 도움이 됩니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a><br><br><strong>② CDC Living With Stress</strong><br>스크린 외의 휴식, 이완, 취미 활동은 스트레스 관리 전략으로 권장됩니다. <a href=\"https://www.cdc.gov/mental-health/living-with/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Living With Stress</a>",
+        "questions": [
+          "나는 독서, 음악 감상, 그림, 수공예 등 오프라인 취미 활동을 즐긴다.",
+          "나는 명상, 요가, 태극권 등 몸과 마음을 함께 쉬게 하는 활동을 한다."
+        ]
+      },
+      {
+        "letter": "C",
+        "name": "사람과 함께하는 건강한 여가",
+        "ref": "함께하는 여가는 연결감과 회복감에 도움",
+        "refDetail": "<strong>① CDC Social Connectedness</strong><br>사람과의 연결은 외로움 감소와 건강 증진에 도움이 됩니다. <a href=\"https://www.cdc.gov/social-connectedness/improving/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Social Connectedness</a><br><br><strong>② CDC Emotional Well-being</strong><br>즐겁고 의미 있는 관계 활동은 웰빙을 높입니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a>",
+        "questions": [
+          "나는 술이나 과식이 중심이 아닌, 의미 있고 건강한 방식으로 여가를 보낸다.",
+          "나는 즐거움과 의미를 주는 관계 활동(봉사, 모임, 동호회)에 참여한다."
+        ]
+      },
+      {
+        "letter": "D",
+        "name": "지속 가능한 여가 설계",
+        "ref": "의도적으로 여가를 확보할수록 회복과 균형 유지에 도움",
+        "refDetail": "<strong>① CDC Emotional Well-being</strong><br>의도적으로 쉬는 시간과 즐거운 활동을 확보하는 것이 정서적 건강에 도움이 됩니다. <a href=\"https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Emotional Well-being</a><br><br><strong>② CDC Living With Stress</strong><br>바쁠수록 회복 시간을 일정에 넣는 습관이 중요합니다. <a href=\"https://www.cdc.gov/mental-health/living-with/index.html\" target=\"_blank\" rel=\"noopener noreferrer\">CDC Living With Stress</a>",
+        "questions": [
+          "나는 바쁜 날에도 10~20분이라도 나만의 쉬는 시간을 확보한다.",
+          "나는 다음 주 할 건강 취미나 여가 활동을 미리 계획한다."
+        ]
+      }
+    ]
+  }
+];
+
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let answers = {};  // key: "areaId-dimIdx-qIdx" → value: 1~4
+let currentArea = 0;
+let selectedMode = 'both';
+let checkupData = {};
+let currentDiagnosisId = null;
+
+// ════════════════════════════════════════
+//  APP START — mode-aware
+// ════════════════════════════════════════
+function startApp(){
+  selectedMode = document.querySelector('input[name="mode"]:checked')?.value || 'both';
+  if(selectedMode === 'checkup'){
+    showScreen('screen-checkup');
+  } else {
+    currentArea = 0;
+    startQuiz();
+  }
+}
+
+function startQuiz(){
+  currentArea=0;
+  renderQuiz();
+  showScreen('screen-quiz');
+  updateProgressBar();
+}
+
+function skipCheckup(){
+  checkupData={};
+  showResults();
+}
+
+function analyzeCheckup(){
+  collectCheckupData();
+  showResults();
+}
+
+function showResults(){
+  document.getElementById('loadingOverlay').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('loadingOverlay').classList.remove('show');
+    buildResults();
+    document.getElementById('progress-bar').style.width='100%';
+    showScreen('screen-result');
+  },1600);
+}
+
+// ════════════════════════════════════════
+//  BIOMARKERS 정의
+// ════════════════════════════════════════
+const gender=()=>document.getElementById('ci-gender')?.value||'m';
+
+const BIOMARKERS = {
+  fbg:{name:'공복혈당',unit:'mg/dL',domains:[1,2,3],
+    grade(v){return v<100?'ok':v<126?'gz':'wn';},
+    ok:'정상',gz:'공복혈당장애 — 전당뇨 범위',wn:'당뇨 기준 이상 — 전문의 상담 권장',
+    mech:'고GI식이·수면부족→인슐린 저항성↑→혈당↑',
+    habit:'정제탄수화물→통곡물 대체, 식후 10분 걷기(GLUT4 활성화), 수면 7시간 확보',
+    supp:'베르베린, 마그네슘, 크롬'},
+  hba1c:{name:'당화혈색소',unit:'%',domains:[1,2,3],
+    grade(v){return v<5.7?'ok':v<6.5?'gz':'wn';},
+    ok:'정상',gz:'전당뇨 범위 (5.7–6.4%)',wn:'당뇨 기준 ≥6.5%',
+    mech:'2–3개월 평균혈당 반영. 공복혈당이 정상이어도 HbA1c가 높으면 식후 혈당 스파이크 시사',
+    habit:'탄수화물 질 개선(통곡물·채소 우선), 식후 걷기, 간식 제한',
+    supp:'베르베린, 마그네슘'},
+  tg:{name:'중성지방',unit:'mg/dL',domains:[1,2,5],
+    grade(v){return v<150?'ok':v<200?'gz':'wn';},
+    ok:'정상',gz:'경계 (150–199)',wn:'고중성지방 ≥200',
+    mech:'과당·정제탄수화물·알코올→간 VLDL 합성↑→TG↑',
+    habit:'과당·음료·주스 완전 제거, 식후 걷기, 음주 줄이기',
+    supp:'오메가-3 4g, 베르베린'},
+  hdl:{name:'HDL 콜레스테롤',unit:'mg/dL',domains:[2,5],
+    grade(v){const lo=gender()==='f'?50:40;return v>=60?'ok':v>=lo?'gz':'wn';},
+    ok:'정상',gz:'낮음 — 심혈관 주의',wn:'위험 저하',
+    mech:'운동부족·흡연·음주→HDL↓. HDL은 혈관 청소부 역할',
+    habit:'유산소 주150분, 금연, 음주 절제',
+    supp:'오메가-3'},
+  ldl:{name:'LDL 콜레스테롤',unit:'mg/dL',domains:[1,5],
+    grade(v){return v<130?'ok':v<160?'gz':'wn';},
+    ok:'정상',gz:'경계 (130–159)',wn:'고LDL ≥160',
+    mech:'포화지방→간 LDL수용체↓→LDL↑. TG/HDL 비율과 함께 볼 것',
+    habit:'포화지방 줄이기, 수용성식이섬유(귀리·콩류), 금연',
+    supp:'오메가-3, 식물성스테롤'},
+  tc:{name:'총콜레스테롤',unit:'mg/dL',domains:[1,5],
+    grade(v){return v<200?'ok':v<240?'gz':'wn';},
+    ok:'정상',gz:'경계 (200–239)',wn:'고콜레스테롤 ≥240',
+    mech:'포화지방·트랜스지방·흡연→TC↑',
+    habit:'포화지방 줄이기, 오메가-3 강화, 운동',
+    supp:'오메가-3'},
+  sbp:{name:'수축기 혈압',unit:'mmHg',domains:[1,2,4,5],
+    grade(v){return v<120?'ok':v<140?'gz':'wn';},
+    ok:'최적',gz:'전고혈압 (120–139)',wn:'고혈압 기준 ≥140',
+    mech:'나트륨 과잉·비만→혈장량↑, 스트레스·음주→교감신경 항진',
+    habit:'저나트륨식(국물 반), 유산소운동 30분×5/주, 호흡 이완',
+    supp:'마그네슘 400mg, 코엔자임Q10'},
+  dbp:{name:'이완기 혈압',unit:'mmHg',domains:[1,2,5],
+    grade(v){return v<80?'ok':v<90?'gz':'wn';},
+    ok:'정상',gz:'경계 (80–89)',wn:'고혈압 기준 ≥90',
+    mech:'과체중→심박출량↑, 음주→혈관평활근 이완 저해',
+    habit:'체중 감량, 음주 제한, DASH 식이',
+    supp:'마그네슘'},
+  bmi:{name:'BMI',unit:'kg/m²',domains:[1,2,3,4],
+    grade(v){return v<23?'ok':v<25?'gz':'wn';},
+    ok:'정상 (한국기준)',gz:'과체중 (23–24.9)',wn:'비만 ≥25',
+    mech:'에너지 과잉·활동 부족·수면부족→렙틴저항성→과식',
+    habit:'에너지 밀도 낮은 식사, 걷기 7000보, 수면 관리',
+    supp:'단백질 보충'},
+  waist:{name:'허리둘레',unit:'cm',domains:[1,2,4],
+    grade(v){const m=gender()==='f'?[80,85]:[85,90];return v<m[0]?'ok':v<m[1]?'gz':'wn';},
+    ok:'정상',gz:'복부비만 경계',wn:'복부비만 기준 초과',
+    mech:'내장지방→FFA 방출→인슐린 저항성·간 지방 축적',
+    habit:'야간 탄수화물 제한, 코어 근력운동, 스트레스 관리',
+    supp:'마그네슘'},
+  alt:{name:'ALT (GPT)',unit:'IU/L',domains:[1,5],
+    grade(v){const l=gender()==='f'?35:40;return v<l?'ok':v<l*2?'gz':'wn';},
+    ok:'정상',gz:'경미한 상승',wn:'유의미한 상승',
+    mech:'간세포 손상 지표. ALT 우세=NAFLD. 과당·야식이 간 부담↑',
+    habit:'과당 제거, 체중 감량, 야식 금지, 자정 전 취침',
+    supp:'밀크씨슬, NAC'},
+  ast:{name:'AST (GOT)',unit:'IU/L',domains:[5,1],
+    grade(v){return v<40?'ok':v<80?'gz':'wn';},
+    ok:'정상',gz:'경미한 상승',wn:'유의미한 상승',
+    mech:'간·심장·근육 손상 시 상승. AST 우세=알코올성 패턴',
+    habit:'절주·금주, 저지방 식사',
+    supp:'밀크씨슬'},
+  ggt:{name:'GGT',unit:'IU/L',domains:[5,1],
+    grade(v){return v<51?'ok':v<100?'gz':'wn';},
+    ok:'정상',gz:'산화스트레스·간 부담',wn:'간 산화부담 고위험',
+    mech:'음주·흡연·과당·환경독소→GGT↑. 글루타치온 소비 반영',
+    habit:'절주, 금연, 항산화 식품 강화',
+    supp:'밀크씨슬, NAC'},
+  hb:{name:'헤모글로빈',unit:'g/dL',domains:[1,5],
+    grade(v){const lo=gender()==='f'?12:13.5;return v>=lo+0.5?'ok':v>=lo?'gz':'wn';},
+    ok:'정상',gz:'경계 — 잠복성 빈혈 주의',wn:'빈혈 가능성',
+    mech:'철·B12·엽산 결핍이 주요인. 만성 피로·집중력 저하의 숨은 원인',
+    habit:'헴철(적색육·두부)+비타민C 병용, 위장 흡수 점검',
+    supp:'철분(의사 상담), B12, 엽산'},
+  mcv:{name:'MCV',unit:'fL',domains:[1,5],
+    grade(v){return v>=80&&v<=100?'ok':v>=75?'gz':'wn';},
+    ok:'정상 (80–100 fL)',gz:'낮음 — 철분/B12 결핍 초기',wn:'영양결핍 가능성',
+    mech:'MCV↓=소구성(철분결핍). MCV↑=대구성(B12·엽산결핍). Hb가 정상이어도 MCV 이상이면 잠복성 빈혈',
+    habit:'철분 식품+비타민C, 또는 B12·엽산 강화 식품',
+    supp:'철분 또는 B12+엽산'},
+  rdw:{name:'RDW',unit:'%',domains:[1,5],
+    grade(v){return v<=14.5?'ok':v<=16?'gz':'wn';},
+    ok:'정상',gz:'영양 불균형 — 조혈 불안정',wn:'심한 불균형',
+    mech:'조혈 영양 공급 불균일. 가장 예민한 영양 불균형 지표. RDW↑+MCV↓=잠복성 철분결핍성 빈혈',
+    habit:'철분·B12·엽산·단백질 균형 섭취',
+    supp:'철분+비타민C, B12'},
+  neut:{name:'호중구%',unit:'%',domains:[4,5],
+    grade(v){return v<=70?'ok':v<=80?'gz':'wn';},
+    ok:'정상 (50–70%)',gz:'상승 — 교감신경 항진 의심',wn:'고도 상승',
+    mech:'교감신경 항진(스트레스·수면부족)→호중구↑',
+    habit:'수면 확보, 스트레스 관리, 호흡 훈련',
+    supp:'마그네슘'},
+  lymp:{name:'림프구%',unit:'%',domains:[4,5],
+    grade(v){return v>=20?'ok':v>=15?'gz':'wn';},
+    ok:'정상 (20–40%)',gz:'감소 — 면역력 저하',wn:'심한 감소',
+    mech:'코르티솔 과잉→림프구 파괴→NLR↑. 수면부족이 핵심 원인',
+    habit:'수면 7–8시간, 취침 시간 고정',
+    supp:'비타민D3'},
+  crp:{name:'hs-CRP',unit:'mg/L',domains:[5,4,1],
+    grade(v){return v<1?'ok':v<3?'gz':'wn';},
+    ok:'저위험 (<1.0)',gz:'중위험 (1.0–3.0)',wn:'고위험 (>3.0)',
+    mech:'흡연·복부비만·수면부족→만성 저등급 염증→CRP↑. 심혈관 위험 독립 예측인자',
+    habit:'금연(최우선), 항염식이(지중해식), 스트레스 관리, 복부비만 감량',
+    supp:'오메가-3 3g, 커큐민'},
+  uric:{name:'요산',unit:'mg/dL',domains:[1,5],
+    grade(v){const lim=gender()==='f'?6:7;return v<lim-1?'ok':v<lim?'gz':'wn';},
+    ok:'정상',gz:'경계 범위',wn:'고요산혈증 기준',
+    mech:'과당·맥주·퓨린 과잉, 탈수→요산↑. 통풍 위험 + 대사증후군 동반 빈도 높음',
+    habit:'과당·맥주 제거, 수분 2L↑/일, 체중 감량',
+    supp:'체리추출물, 비타민C'},
+  bun:{name:'BUN',unit:'mg/dL',domains:[5,1],
+    grade(v){return v<=20?'ok':v<=25?'gz':'wn';},
+    ok:'정상 (7–20)',gz:'상승 — 탈수·고단백 가능성',wn:'고부하',
+    mech:'단백질 대사 산물. 고단백·탈수·카페인 과다 시 상승 (Cr 정상이면 신장 이상 아님)',
+    habit:'수분 1.5L/일, 단백질 적정량(0.8–1.2g/kg), 카페인 제한',
+    supp:'수분 보충'},
+  cr:{name:'크레아티닌',unit:'mg/dL',domains:[5,1],
+    grade(v){const l=gender()==='f'?1.0:1.2;return v<=l?'ok':v<l*1.5?'gz':'wn';},
+    ok:'정상',gz:'경계',wn:'신장 여과 저하 가능',
+    mech:'근육 대사 산물. 낮으면 근감소증 의심. 높으면 신장 기능 저하',
+    habit:'수분 확보, 진통제 남용 금지, 금연',
+    supp:'코엔자임Q10'},
+  egfr:{name:'eGFR',unit:'mL/min',domains:[5,1],
+    grade(v){return v>=90?'ok':v>=60?'gz':'wn';},
+    ok:'정상 (≥90)',gz:'G2 경도저하 (60–89)',wn:'G3 이하 — 신장내과 상담',
+    mech:'사구체여과율. 고혈압·당뇨→신장 손상 가속. 심혈관 위험도 병행 상승',
+    habit:'혈압·혈당 관리 최우선, 저염식',
+    supp:'코엔자임Q10'},
+  tsh:{name:'TSH',unit:'mIU/L',domains:[4,1],
+    grade(v){return v>=0.4&&v<=4.0?'ok':v>4.0?'gz':'wn';},
+    ok:'정상 (0.4–4.0)',gz:'경계 수치',wn:'이상 범위 — 내분비내과 상담',
+    mech:'스트레스→시상하부-뇌하수체 축 교란. 갑상선 기능은 지질·대사 전반에 영향',
+    habit:'스트레스 관리, BPA-free 용기 사용, 요오드 적정 섭취',
+    supp:'셀레늄(브라질너트), 아연'},
+  vitd:{name:'비타민 D',unit:'ng/mL',domains:[5,1],
+    grade(v){return v>=30?'ok':v>=20?'gz':'wn';},
+    ok:'충분 (≥30)',gz:'부족 (20–29)',wn:'결핍 (<20)',
+    mech:'햇빛 노출 부족이 결핍의 90%. 인슐린 분비·면역·뼈 건강에 영향',
+    habit:'점심 햇빛 10–30분, 연어·계란노른자',
+    supp:'비타민D3 2000–4000IU + K2'},
+  ferritin:{name:'페리틴',unit:'ng/mL',domains:[1,5],
+    grade(v){const hi=gender()==='f'?150:300;return v>=12&&v<=hi?'ok':v<12?'wn':'gz';},
+    ok:'정상',gz:'범위 이상 — 추가 확인 필요',wn:'결핍 — 내과 상담',
+    mech:'철 저장 지표. 결핍 시 잠복성 빈혈. 만성염증 시 상승(급성반응물)',
+    habit:'헴철(적색육·간)+비타민C, 공복 보충',
+    supp:'철분(의사 상담), 비타민C'}
+};
+
+// ════════════════════════════════════════
+//  LIVE CHECK & RATIO CALCS
+// ════════════════════════════════════════
+function liveCheck(el, key){
+  const bm=BIOMARKERS[key]; if(!bm) return;
+  const v=parseFloat(el.value);
+  const hint=document.getElementById('ch-'+key);
+  if(isNaN(v)||el.value===''){
+    el.className='ci-input'; if(hint) hint.className='ci-hint'; return;
+  }
+  const g=bm.grade(v);
+  el.className='ci-input ci-'+{ok:'ok',gz:'gz',wn:'wn'}[g];
+  if(hint){
+    hint.className='ci-hint show '+g;
+    hint.textContent={ok:'✅ '+bm.ok,gz:'△ '+bm.gz,wn:'🚨 '+bm.wn}[g];
+  }
+}
+
+function calcTgHdl(){
+  const tg=parseFloat(document.getElementById('ci-tg')?.value);
+  const hdl=parseFloat(document.getElementById('ci-hdl')?.value);
+  const box=document.getElementById('tg-hdl-box');
+  const rv=document.getElementById('rv-tg-hdl');
+  const hint=document.getElementById('ch-tg-hdl');
+  if(!isNaN(tg)&&!isNaN(hdl)&&hdl>0){
+    const r=(tg/hdl).toFixed(2);
+    rv.textContent=r;
+    rv.style.color=r>=3?'#DC2626':r>=1.5?'#D97706':'#16A34A';
+    box.style.display='block';
+    hint.className='ci-hint show '+(r>=3?'wn':r>=1.5?'gz':'ok');
+    hint.textContent=r>=3?'🚨 인슐린 저항성 고위험. sdLDL 생성 가능성 — LDL 단독 수치 신뢰 금지':
+      r>=1.5?'△ 경계. 과당·정제탄수화물·음주 점검 필요':'✅ 최적 범위 (<1.5)';
+  } else { box.style.display='none'; }
+}
+
+function calcNLR(){
+  const n=parseFloat(document.getElementById('ci-neut')?.value);
+  const l=parseFloat(document.getElementById('ci-lymp')?.value);
+  const box=document.getElementById('nlr-box');
+  const rv=document.getElementById('rv-nlr');
+  const hint=document.getElementById('ch-nlr');
+  if(!isNaN(n)&&!isNaN(l)&&l>0){
+    const r=(n/l).toFixed(2);
+    rv.textContent=r; rv.style.color=r>=2.5?'#DC2626':r>=2?'#D97706':'#16A34A';
+    box.style.display='block';
+    hint.className='ci-hint show '+(r>=2.5?'wn':r>=2?'gz':'ok');
+    hint.textContent=r>=2.5?'🚨 만성 스트레스·교감신경 항진 강력 시사. 수면 개선이 최우선':
+      r>=2?'△ 교감신경 항진 경향. 카페인·수면 관리 시작':'✅ 균형 (1.5–2.0)';
+  } else { box.style.display='none'; }
+}
+
+function calcBunCr(){
+  const bun=parseFloat(document.getElementById('ci-bun')?.value);
+  const cr=parseFloat(document.getElementById('ci-cr')?.value);
+  const box=document.getElementById('bun-cr-box');
+  const rv=document.getElementById('rv-bun-cr');
+  const hint=document.getElementById('ch-bun-cr');
+  if(!isNaN(bun)&&!isNaN(cr)&&cr>0){
+    const r=(bun/cr).toFixed(1);
+    rv.textContent=r; rv.style.color=r>=20?'#DC2626':r>=15?'#D97706':'#16A34A';
+    box.style.display='block';
+    hint.className='ci-hint show '+(r>=20?'wn':r>=15?'gz':'ok');
+    hint.textContent=r>=20?'🚨 탈수·고단백·카페인 과다 의심. Cr이 정상이면 신장은 이상 없음 — 생활습관 점검':
+      r>=15?'△ 경계. 수분·단백질 섭취 확인':'✅ 정상 범위';
+  } else { box.style.display='none'; }
+}
+
+function calcAltAst(){
+  const alt=parseFloat(document.getElementById('ci-alt')?.value);
+  const ast=parseFloat(document.getElementById('ci-ast')?.value);
+  const box=document.getElementById('alt-ast-box');
+  const rv=document.getElementById('rv-alt-ast');
+  const msg=document.getElementById('rv-alt-ast-msg');
+  if(!isNaN(alt)&&!isNaN(ast)){
+    box.style.display='block';
+    rv.textContent=alt>ast?'ALT 우세':'AST 우세';
+    rv.style.color=alt>ast?'#854F0B':'#185FA5';
+    msg.textContent=alt>ast?'→ 비알코올성 지방간(NAFLD) 초기 가능성. 과당·야식·탄수화물 과잉 점검':
+      '→ 알코올성 간손상·극심한 과로·근육 손상 가능성';
+  } else { box.style.display='none'; }
+}
+
+function calcPP(){
+  const sbp=parseFloat(document.getElementById('ci-sbp')?.value);
+  const dbp=parseFloat(document.getElementById('ci-dbp')?.value);
+  // pulse pressure stored internally
+}
+
+function collectCheckupData(){
+  checkupData={};
+  Object.keys(BIOMARKERS).forEach(key=>{
+    const el=document.getElementById('ci-'+key);
+    if(el&&el.value!==''){
+      const v=parseFloat(el.value);
+      if(!isNaN(v)){
+        const bm=BIOMARKERS[key];
+        checkupData[key]={value:v, status:bm.grade(v), bm};
+      }
+    }
+  });
+  // NLR 파생
+  const n=parseFloat(document.getElementById('ci-neut')?.value);
+  const l=parseFloat(document.getElementById('ci-lymp')?.value);
+  if(!isNaN(n)&&!isNaN(l)&&l>0){
+    const nlr=parseFloat((n/l).toFixed(2));
+    checkupData['nlr']={value:nlr,status:nlr>=2.5?'wn':nlr>=2?'gz':'ok',
+      bm:{name:'NLR (스트레스 지수)',unit:'',domains:[4,5],
+        mech:'호중구/림프구 비율. 만성 스트레스·교감신경 항진·수면부족 반영',
+        habit:'수면 7–8시간 확보, 취침 시간 고정, 카페인 오후 2시 컷오프, 복식호흡 훈련',
+        supp:'마그네슘 400mg, 아슈와간다',
+        ok:'균형(1.5–2.0)',gz:'교감신경 항진 경향',wn:'만성 스트레스 강력 시사'}};
+  }
+  // BUN/Cr 파생
+  const bun=parseFloat(document.getElementById('ci-bun')?.value);
+  const cr=parseFloat(document.getElementById('ci-cr')?.value);
+  if(!isNaN(bun)&&!isNaN(cr)&&cr>0){
+    const ratio=parseFloat((bun/cr).toFixed(1));
+    if(ratio>=15) checkupData['bun_cr']={value:ratio,status:ratio>=20?'wn':'gz',
+      bm:{name:'BUN/Cr 비율(탈수 지수)',unit:'',domains:[5,1],
+        mech:'BUN↑+Cr 정상=신장 이상 아닌 탈수·고단백·카페인 과다 신호(신전성 스트레스)',
+        habit:'수분 1.5L/일, 단백질 0.8–1.2g/kg, 카페인 하루 400mg 이하',
+        supp:'전해질 보충',
+        ok:'정상(10–20)',gz:'경계',wn:'탈수·고단백 과부하 의심'}};
+  }
+  // TG/HDL 파생
+  const tg=parseFloat(document.getElementById('ci-tg')?.value);
+  const hdl=parseFloat(document.getElementById('ci-hdl')?.value);
+  if(!isNaN(tg)&&!isNaN(hdl)&&hdl>0){
+    const ratio=parseFloat((tg/hdl).toFixed(2));
+    checkupData['tg_hdl']={value:ratio,status:ratio>=3?'wn':ratio>=1.5?'gz':'ok',
+      bm:{name:'TG/HDL 비율(인슐린저항성)',unit:'',domains:[1,2,5],
+        mech:'TG/HDL↑=인슐린 저항성 초기+sdLDL 생성. LDL이 정상이어도 이 비율이 높으면 심혈관 위험 과소평가',
+        habit:'과당·정제탄수화물 제한, 식후 걷기, 유산소 주150분',
+        supp:'오메가-3 3g, 베르베린',
+        ok:'최적(<1.5)',gz:'경계(1.5–3.0)',wn:'인슐린 저항성 고위험(≥3.0)'}};
+  }
+}
+
+// ════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProgressBar(){
+  const pct=(currentArea/AREAS.length)*100;
+  document.getElementById('progress-bar').style.width=pct+'%';
+}
+function resetQuiz(){
+  answers={};currentArea=0;checkupData={};
+  showScreen('screen-intro');
+  document.getElementById('progress-bar').style.width='0%';
+}
+
+// ════════════════════════════════════════
+//  QUIZ RENDER
+// ════════════════════════════════════════
+function renderQuiz(){
+  const area=AREAS[currentArea];
+  document.getElementById('quiz-area-icon').textContent=area.icon;
+  document.getElementById('quiz-area-title').textContent=`영역 ${area.id}. ${area.name} — ${area.sub}`;
+  document.getElementById('quiz-area-sub').textContent=area.focus;
+  document.getElementById('quiz-progress-text').textContent=`영역 ${currentArea+1} / ${AREAS.length}`;
+  updateAnsweredCount();
+
+  const container=document.getElementById('quiz-questions');
+  container.innerHTML='';
+
+  area.dims.forEach((dim,di)=>{
+    const group=document.createElement('div');
+    group.className='sub-dim-group';
+
+    const lbl=document.createElement('div');
+    lbl.className='sub-dim-label';
+    lbl.innerHTML=`
+      <div class="sdl-letter">${dim.letter}</div>
+      <div class="sdl-text">${dim.name}</div>
+      <span class="sdl-ref" onclick="showRef(${currentArea},${di})">📖 근거</span>`;
+    group.appendChild(lbl);
+
+    dim.questions.forEach((q,qi)=>{
+      const key=`${area.id}-${di}-${qi}`;
+      const saved=answers[key];
+      const card=document.createElement('div');
+      card.className='question-card'+(saved!==undefined?' answered':'');
+      card.id='card-'+key;
+
+      const labels=['거의 하지<br>않음','가끔<br>실천함','자주<br>실천함','꾸준히<br>실천함'];
+      card.innerHTML=`
+        <div class="q-text"><span class="q-num">Q${di*2+qi+1}.</span>${q}</div>
+        <div class="radio-group">
+          ${[1,2,3,4].map(v=>`
+            <label>
+              <input type="radio" name="${key}" value="${v}" ${saved==v?'checked':''} onchange="saveAnswer('${key}',${v},this)">
+              <span class="radio-btn">${v}점<br><span style="font-size:9px;opacity:.75">${labels[v-1]}</span></span>
+            </label>`).join('')}
+        </div>`;
+      group.appendChild(card);
+    });
+    container.appendChild(group);
+  });
+
+  // button state
+  document.getElementById('btn-prev').disabled=(currentArea===0);
+  const btnNext=document.getElementById('btn-next');
+  if(currentArea===AREAS.length-1){
+    btnNext.textContent='✅ 결과 보기';
+  } else {
+    btnNext.textContent='다음 영역 →';
+  }
+}
+
+function saveAnswer(key,val,el){
+  answers[key]=val;
+  const card=document.getElementById('card-'+key);
+  if(card) card.classList.add('answered');
+  updateAnsweredCount();
+}
+
+function updateAnsweredCount(){
+  const area=AREAS[currentArea];
+  let count=0;
+  area.dims.forEach((dim,di)=>{
+    dim.questions.forEach((_,qi)=>{
+      if(answers[`${area.id}-${di}-${qi}`]!==undefined) count++;
+    });
+  });
+  document.getElementById('quiz-answered-count').textContent=`${count}/8 답변 완료`;
+}
+
+function prevArea(){
+  if(currentArea>0){currentArea--;renderQuiz();updateProgressBar();window.scrollTo({top:0});}
+}
+function nextArea(){
+  // check all answered
+  const area=AREAS[currentArea];
+  let unanswered=0;
+  area.dims.forEach((dim,di)=>{
+    dim.questions.forEach((_,qi)=>{
+      if(answers[`${area.id}-${di}-${qi}`]===undefined) unanswered++;
+    });
+  });
+  if(unanswered>0){
+    if(!confirm(`${unanswered}개 질문에 아직 답변하지 않았습니다.\n건너뛰고 진행하시겠습니까?\n(미응답은 1점으로 처리됩니다)`)) return;
+  }
+  if(currentArea<AREAS.length-1){
+    currentArea++;
+    renderQuiz();
+    updateProgressBar();
+    window.scrollTo({top:0});
+  } else {
+    if(selectedMode==='both'){
+      showScreen('screen-checkup');
+    } else {
+      showResults();
+    }
+  }
+}
+
+// ════════════════════════════════════════
+//  REFERENCE MODAL
+// ════════════════════════════════════════
+function showRef(areaIdx,dimIdx){
+  const dim=AREAS[areaIdx].dims[dimIdx];
+  document.getElementById('modal-title').textContent=`📖 근거 자료: ${dim.name}`;
+  document.getElementById('modal-content').innerHTML=`<p>${dim.refDetail}</p>`;
+  document.getElementById('refModal').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('refModal').classList.remove('show');
+}
+
+// ════════════════════════════════════════
+//  RESULTS
+// ════════════════════════════════════════
+function showResults(){
+  document.getElementById('loadingOverlay').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('loadingOverlay').classList.remove('show');
+    buildResults();
+    document.getElementById('progress-bar').style.width='100%';
+    showScreen('screen-result');
+  },1600);
+}
+
+function getAreaScore(areaId){
+  const area=AREAS.find(a=>a.id===areaId);
+  let total=0;
+  area.dims.forEach((dim,di)=>{
+    dim.questions.forEach((_,qi)=>{
+      total+=(answers[`${areaId}-${di}-${qi}`]||1);
+    });
+  });
+  return total; // max 32
+}
+
+function getDimScore(areaId,dimIdx){
+  const area=AREAS.find(a=>a.id===areaId);
+  let s=0;
+  area.dims[dimIdx].questions.forEach((_,qi)=>{
+    s+=(answers[`${areaId}-${dimIdx}-${qi}`]||1);
+  });
+  return s; // max 8
+}
+
+function pct(score,max){return Math.round((score/max)*100);}
+
+function getRiskLevel(p){
+  if(p<=40) return {label:'위험',cls:'risk-high',color:'#EF4444'};
+  if(p<=60) return {label:'주의',cls:'risk-warn',color:'#F97316'};
+  if(p<=80) return {label:'양호',cls:'risk-low',color:'#22C55E'};
+  return {label:'우수',cls:'risk-best',color:'#3B82F6'};
+}
+
+const AREA_INTERPRETATIONS={
+  1:{
+    strength:'혈당을 덜 흔드는 식사 리듬이 비교적 잘 잡혀 있습니다. 채소·통곡물·절제된 식사 선택이 안정적으로 이어지는 편입니다.',
+    caution:'기본은 갖추고 있지만 외식, 국물, 단 음료, 야식 같은 상황에서 흔들릴 여지가 보입니다. 작은 흔들림이 누적되기 쉬운 영역입니다.',
+    weak:'정제 탄수화물, 단 음료, 과식·야식 패턴이 아직 남아 있을 가능성이 큽니다. 만성질환 예방에서 가장 먼저 손대면 체감이 큰 영역입니다.',
+    suggestion:{strength:'지금의 식사 패턴을 유지하되, 바쁜 날에도 “채소 먼저 → 단백질 → 탄수화물” 순서를 지키는 기본 루틴을 고정해보세요.',caution:'하루 1끼만이라도 “채소 먼저 → 단백질 → 탄수화물” 순서를 고정하고, 단 음료는 물·무가당 음료로 바꿔보세요.',weak:'이번 주는 야식 중단, 단 음료 끊기, 채소 먼저 먹기 3가지 중 딱 1가지만 정해서 매일 실천해보세요.'}
+  },
+  2:{
+    strength:'걷기, 근력, 유연성, 앉아있는 시간 관리가 비교적 균형 있게 유지되고 있습니다. 움직임이 생활 속에 스며든 상태입니다.',
+    caution:'운동은 하고 있지만 오래 앉아있는 시간, 근력운동, 스트레칭 중 일부가 비어 있을 수 있습니다. 활동의 질을 조금 더 채우면 좋습니다.',
+    weak:'전체 활동량 부족과 오래 앉아있는 습관이 함께 나타날 가능성이 큽니다. 대사 건강과 체력 저하를 막기 위해 우선 개입이 필요한 영역입니다.',
+    suggestion:{strength:'현재 리듬을 유지하면서 주 2회 근력운동과 30분마다 일어나기 습관을 함께 유지해보세요.',caution:'하루 7,000보 목표와 30분마다 1~2분 일어서기 알람을 동시에 적용해보세요.',weak:'운동 계획보다 먼저 “하루 총 걸음수 늘리기 + 오래 앉아있지 않기”부터 시작하세요. 오늘 바로 한 정거장 먼저 내려 걷는 방식이 좋습니다.'}
+  },
+  3:{
+    strength:'수면 시간과 회복 루틴이 비교적 안정적입니다. 몸이 회복할 시간을 꾸준히 확보하고 있는 편입니다.',
+    caution:'수면 시간은 어느 정도 확보되어도 취침 시각, 화면 노출, 카페인, 낮 회복 습관이 수면의 질을 떨어뜨릴 수 있습니다.',
+    weak:'수면 부족 또는 불규칙한 수면이 대사 건강과 회복을 방해하고 있을 가능성이 큽니다. 다른 영역 실천도 함께 흔들릴 수 있습니다.',
+    suggestion:{strength:'현재 수면 리듬을 유지하면서 취침 1시간 전 화면 끄기와 일정한 기상 시각을 계속 지켜보세요.',caution:'취침 1시간 전 스마트폰 끄기, 오후 2시 이후 카페인 줄이기, 취침·기상 시각 고정을 1주일만 실험해보세요.',weak:'오늘 밤부터 침실에서 스마트폰을 멀리 두고, 수면 시간을 먼저 확보하세요. 수면이 회복되면 식사·운동 실천도 훨씬 쉬워집니다.'}
+  },
+  4:{
+    strength:'스트레스를 알아차리고 회복 행동으로 전환하는 힘이 비교적 잘 작동하고 있습니다. 감정이 생활습관을 크게 흔들지 않는 상태입니다.',
+    caution:'스트레스를 느끼는 순간은 인식하지만 회복 행동으로 바로 이어지지 않는 구간이 보입니다. 긴장 해소 방식의 정교화가 필요합니다.',
+    weak:'감정과 스트레스가 식사, 수면, 실천 유지력을 흔들고 있을 수 있습니다. 의지 문제라기보다 회복 전략이 부족한 상태에 가깝습니다.',
+    suggestion:{strength:'지금의 회복 루틴을 유지하되, 스트레스 신호가 왔을 때 바로 쓰는 1분 호흡·5분 걷기 같은 응급 루틴을 고정해두세요.',caution:'스트레스가 올라올 때 사용할 행동 1가지를 미리 정해두세요. 예: 5분 걷기, 심호흡 10회, 감정 메모.',weak:'폭식·야식·멍하니 스크롤 대신 사용할 대체 행동 1가지를 정하고, “스트레스가 오면 바로 이것”이라는 규칙을 만들어보세요.'}
+  },
+  5:{
+    strength:'건강한 선택을 돕는 생활 환경이 비교적 잘 만들어져 있습니다. 습관을 끌어주는 배치와 분위기가 형성된 편입니다.',
+    caution:'환경 설계가 부분적으로는 되어 있어도 여전히 유혹 노출이나 좌식 환경이 남아 있을 수 있습니다. 행동을 쉽게 만드는 세팅이 더 필요합니다.',
+    weak:'주변 환경이 건강한 선택보다 편한 선택을 밀어주는 상태일 가능성이 큽니다. 의지보다 환경을 바꾸는 것이 먼저입니다.',
+    suggestion:{strength:'지금의 환경 세팅을 유지하면서 물, 과일, 운동화처럼 좋은 선택의 단서를 계속 눈에 보이게 두세요.',caution:'집·책상·차 안에서 자주 보이는 간식과 음료를 한 번만 재배치해도 행동이 달라집니다. 건강한 선택이 더 쉽게 보이게 바꿔보세요.',weak:'오늘 바로 군것질·술·가당음료 노출을 줄이고, 물병·과일·운동화를 눈에 띄는 위치에 두세요. 환경이 바뀌면 실천이 훨씬 쉬워집니다.'}
+  },
+  6:{
+    strength:'건강 행동을 지지해 주는 사람과 연결망이 있습니다. 혼자 버티기보다 함께 유지하는 기반이 비교적 잘 마련되어 있습니다.',
+    caution:'도움을 받을 수는 있지만 실제로 요청하거나 예방 관리를 이어가는 힘은 다소 약할 수 있습니다. 연결을 실행으로 바꾸는 단계가 필요합니다.',
+    weak:'혼자 버티는 방식이 반복되어 실천 지속과 예방 관리가 끊기기 쉬운 상태입니다. 연결과 지원 체계를 만드는 것이 중요합니다.',
+    suggestion:{strength:'지금의 지지 관계를 유지하면서 건강 목표를 함께 확인할 사람 1명을 계속 남겨두세요.',caution:'가족이나 친구 1명에게 현재 건강 목표를 공유하고, 검진·상담·실천 체크를 함께 해달라고 부탁해보세요.',weak:'오늘 안에 응원과 점검을 부탁할 사람 1명에게 메시지를 보내고, 필요한 예방검진 일정도 함께 잡아보세요.'}
+  },
+  7:{
+    strength:'건강 정보를 실제 행동으로 옮기는 자기관리 역량이 좋습니다. 알고 끝나는 것이 아니라 확인하고 조정하는 힘이 있습니다.',
+    caution:'정보는 접하지만 라벨 읽기, 수치 확인, 구체적 행동 계획으로 이어지는 비율이 낮을 수 있습니다. 아는 것과 하는 것 사이 연결이 필요합니다.',
+    weak:'좋은 정보를 알아도 실제 선택과 기록으로 연결되지 않는 구간이 큽니다. 자기 점검 시스템을 먼저 만드는 것이 중요합니다.',
+    suggestion:{strength:'현재처럼 라벨 읽기와 수치 확인을 이어가되, 한 달에 한 번은 혈압·혈당·허리둘레 같은 지표를 정리해보세요.',caution:'이번 주 한 번은 영양성분표 또는 건강검진 수치를 직접 보고, 다음 행동 1가지를 메모해보세요.',weak:'지식은 충분해도 실행 연결이 약할 수 있습니다. 오늘 당장 최근 검진 결과나 혈압·허리둘레 중 하나를 확인하고 기록부터 시작하세요.'}
+  },
+  8:{
+    strength:'회복되는 여가를 스스로 설계할 수 있습니다. 쉬는 시간이 단순 소모가 아니라 재충전으로 연결되는 편입니다.',
+    caution:'쉬는 시간은 있지만 화면 의존 여가가 많아 회복감이 낮을 수 있습니다. 여가의 질을 조정하면 전체 실천력이 좋아집니다.',
+    weak:'여가가 회복보다 소모로 작동해 스트레스와 좌식 시간이 누적될 수 있습니다. 즐거움과 회복을 동시에 주는 활동이 필요합니다.',
+    suggestion:{strength:'현재의 회복 여가를 계속 유지하면서, 화면 없는 활동 비중을 조금 더 늘려보세요.',caution:'주 2회 30분 이상은 산책·독서·요리·정리 같은 화면 없는 여가를 일정표에 먼저 넣어보세요.',weak:'이번 주말 일정에 “스마트폰 없이 30분” 한 칸을 먼저 예약하세요. 짧아도 반복되면 회복 체감이 크게 달라집니다.'}
+  }
+};
+
+function getAreaStatus(p){
+  if(p>=80) return {key:'strength',label:'강점'};
+  if(p>=60) return {key:'caution',label:'주의'};
+  return {key:'weak',label:'취약'};
+}
+
+function getLowestDimension(area){
+  const dimScores=area.dims.map((d,di)=>({
+    ...d,
+    score:getDimScore(area.id,di),
+    pctVal:pct(getDimScore(area.id,di),8)
+  }));
+  return dimScores.sort((a,b)=>a.pctVal-b.pctVal)[0];
+}
+
+function renderAreaInsights(areaScores){
+  const el=document.getElementById('area-insight-grid');
+  if(!el) return;
+  el.innerHTML='';
+
+  const sorted=[...areaScores].sort((a,b)=>a.pctVal-b.pctVal);
+  sorted.forEach(a=>{
+    const status=getAreaStatus(a.pctVal);
+    const lowest=getLowestDimension(a);
+    const copy=AREA_INTERPRETATIONS[a.id]||{};
+    const summary=copy[status.key]||'해당 영역 점수를 기준으로 생활습관을 점검해보세요.';
+    const suggestion=(copy.suggestion&&copy.suggestion[status.key])||'가장 낮은 세부차원부터 하나씩 개선해보세요.';
+    const card=document.createElement('div');
+    card.className=`area-insight-card ${status.key}`;
+    card.innerHTML=`
+      <div class="area-insight-top">
+        <div class="area-insight-title">${a.icon} ${a.name} — ${a.sub}</div>
+        <span class="status-chip ${status.key}">${status.label}</span>
+      </div>
+      <div class="area-insight-score">${a.score}/32점 · ${a.pctVal}%</div>
+      <p class="area-insight-summary">${summary}</p>
+      <div class="area-insight-focus"><strong>가장 낮은 세부차원</strong> · ${lowest.letter}. ${lowest.name} (${lowest.score}/8점)</div>
+      <div class="area-insight-suggestion"><strong>행동 제안</strong><span>${suggestion}</span></div>`;
+    el.appendChild(card);
+  });
+}
+
+function buildResults(){
+  // Scores
+  const hasHabit = Object.keys(answers).length > 0;
+  const hasCheckup = Object.keys(checkupData).length > 0;
+  const areaScores=AREAS.map(a=>({...a,score:getAreaScore(a.id),pctVal:pct(getAreaScore(a.id),32)}));
+  const totalScore=areaScores.reduce((s,a)=>s+a.score,0);
+
+  // Total display
+  if(hasHabit){
+    document.getElementById('result-total').textContent=totalScore;
+    const totalPct=pct(totalScore,256);
+    let grade,msg;
+    if(totalPct>=80){grade='🏆 우수';msg='건강 생활습관이 전반적으로 잘 유지되고 있습니다. 최약점을 보완하면 더 완성됩니다.';}
+    else if(totalPct>=65){grade='✅ 양호';msg='대부분 영역이 양호합니다. 취약 영역의 생활습관 설계에 집중해보세요.';}
+    else if(totalPct>=50){grade='⚠️ 주의';msg='절반 이상의 영역에서 생활습관 개선이 필요합니다. 낮은 영역부터 하나씩 시작하세요.';}
+    else{grade='🚨 위험';msg='여러 영역에서 만성질환 관련 생활습관 위험 요인이 확인됩니다. 지금 시작하는 것이 중요합니다.';}
+    document.getElementById('result-grade-text').textContent=`${grade} (${totalPct}%)`;
+    document.getElementById('result-msg').textContent=msg;
+  } else {
+    document.getElementById('result-total').textContent='—';
+    document.getElementById('result-grade-text').textContent='검진 분석 완료';
+    document.getElementById('result-msg').textContent='건강검진 수치를 기반으로 생활습관 설계 방향을 안내합니다.';
+  }
+
+  // 건강검진 결과 블록
+  const checkupBlock=document.getElementById('checkup-result-block');
+  if(hasCheckup){
+    checkupBlock.style.display='block';
+    buildCheckupResult();
+    buildIntegratedSection(areaScores);
+  } else {
+    checkupBlock.style.display='none';
+  }
+
+  // 실험(experiment-teaser): 총점+레이더차트까지만 무료로 보여주고,
+  // 약점순위/점수표/영역해석/액션아이템은 항상 잠근 뒤 프리미엄 리드 게이트로 유도한다.
+  document.querySelector('.weak-rank-section').style.display='none';
+  document.querySelector('.score-table').style.display='none';
+  document.querySelector('.area-insight-section').style.display='none';
+  document.querySelector('.action-section').style.display='none';
+  const teaserGate=document.getElementById('teaserGate');
+  if(teaserGate) teaserGate.style.display='block';
+  drawRadar(areaScores);
+  buildEvidence();
+
+  if(hasHabit){
+    // 익명 진단 기록 (프리미엄 신청 여부와 무관하게 모든 진단 완료자 대상, best-effort)
+    logDiagnosisToSheet(collectAreaScoresForReport(),totalScore);
+  }
+}
+
+function buildCheckupResult(){
+  const body=document.getElementById('crs-body');
+  body.innerHTML='';
+  const domainNames={1:'🍎식',2:'🏃동',3:'😴휴',4:'🧠심',5:'🏡환',6:'👥연',7:'📚지',8:'🎨락'};
+  const domainColors={1:'#16A34A',2:'#0EA5E9',3:'#6366F1',4:'#F59E0B',5:'#D97706',6:'#0891B2',7:'#059669',8:'#7C3AED'};
+
+  const warnItems=Object.entries(checkupData).filter(([,d])=>d.status==='wn');
+  const gzItems=Object.entries(checkupData).filter(([,d])=>d.status==='gz');
+  const total=Object.keys(checkupData).length;
+
+  if(warnItems.length>0||gzItems.length>0){
+    const gz=document.createElement('div');
+    gz.className='gz-summary';
+    gz.innerHTML=`<h4>🔶 회색지대 감지: ${warnItems.length+gzItems.length}개 지표</h4>
+      <p>입력된 ${total}개 지표 중 <strong>주의 ${warnItems.length}개</strong>, <strong>경계 ${gzItems.length}개</strong>를 확인했습니다.<br>
+      질병으로 확정된 것이 아니라 지금 생활습관을 개선해야 한다는 몸의 신호입니다.<br>
+      건강습관이 어떻게 이 수치를 만들었는지 아래 연결 설계에서 확인하세요.</p>`;
+    body.appendChild(gz);
+  } else {
+    const ok=document.createElement('div');
+    ok.className='gz-summary';
+    ok.innerHTML=`<h4>✅ 회색지대 없음</h4><p>입력하신 ${total}개 지표가 모두 정상 범위입니다.</p>`;
+    body.appendChild(ok);
+  }
+
+  // 이 섹션은 "회색지대(주의·경계)"만 보여준다 — 정상 지표는 카드로 나열하지 않는다.
+  [...warnItems,...gzItems].forEach(([key,data])=>{
+    const bm=data.bm;
+    const stClass={ok:'bm-ok',gz:'bm-gz',wn:'bm-wn'}[data.status];
+    const stLabel={ok:'✅ 정상',gz:'△ 경계·회색지대',wn:'🚨 주의'}[data.status];
+    const domTags=(bm.domains||[]).slice(0,3).map(d=>
+      `<span class="bm-domain-tag" style="background:${domainColors[d]}20;color:${domainColors[d]}">${domainNames[d]}</span>`).join('');
+    const card=document.createElement('div');
+    card.className=`bm-card ${stClass}`;
+    const valDisp=typeof data.value==='number'?data.value.toFixed(data.value<10?1:0):data.value;
+    card.innerHTML=`<div class="bm-top">
+        <div><div class="bm-name">${bm.name}</div><div class="bm-domain-tags">${domTags}</div></div>
+        <div style="text-align:right"><div class="bm-val">${valDisp} ${bm.unit||''}</div><span class="bm-status">${stLabel}</span></div>
+      </div>
+      <div class="bm-insight">
+        <strong>생리 기전:</strong> ${bm.mech||'—'}<br>
+        <strong>생활습관 연결:</strong> ${bm.habit||'—'}
+        ${bm.supp?`<br><strong>영양 지원:</strong> ${bm.supp}`:''}
+      </div>`;
+    body.appendChild(card);
+  });
+}
+
+function buildIntegratedSection(areaScores){
+  const body=document.getElementById('is-body');
+  body.innerHTML='';
+  const domainColors={1:'#16A34A',2:'#0EA5E9',3:'#6366F1',4:'#F59E0B',5:'#D97706',6:'#0891B2',7:'#059669',8:'#7C3AED'};
+
+  // 검진 이상 항목별 영역 위험도 집계
+  const domainRisk={};
+  Object.entries(checkupData).forEach(([,data])=>{
+    const w={wn:3,gz:2,ok:0}[data.status]||0;
+    if(w>0&&data.bm.domains){
+      data.bm.domains.forEach((d,i)=>{
+        domainRisk[d]=(domainRisk[d]||0)+w*(data.bm.domains.length-i);
+      });
+    }
+  });
+
+  // 습관 점수 + 검진 위험도 통합 우선순위
+  const combined=AREAS.map(a=>{
+    const habitRisk=32-getAreaScore(a.id);
+    const ckRisk=domainRisk[a.id]||0;
+    return {...a, priority:habitRisk*2+ckRisk};
+  }).sort((a,b)=>b.priority-a.priority).slice(0,4);
+
+  const designMap={
+    1:`<strong>🥗 식이 설계:</strong> 채소→단백질→탄수화물 순서, 통곡물 대체, 야식 0, 나트륨↓, 과당 음료 제거<br><strong>🏃 활동 연계:</strong> 식후 10분 걷기 (혈당 스파이크 억제 + GLUT4 활성화)<br><strong>🧪 영양 지원:</strong> 오메가-3, 마그네슘, 베르베린(혈당 관리 시)`,
+    2:`<strong>🏃 운동 설계:</strong> 유산소 주150분, 근력운동 주2–3회, 식후 10분 걷기 반드시<br><strong>⏰ 일상 설계:</strong> 30–40분마다 좌식 중단 알람, 걸음수 7000보 목표<br><strong>🧪 영양 지원:</strong> 비타민D3, 마그네슘, 단백질 1.2g/kg`,
+    3:`<strong>😴 수면 설계:</strong> 취침 1시간 전 화면 OFF, 오후 2시 이후 카페인 차단, 18–22도 수면 환경<br><strong>⏰ 리듬 고정:</strong> 취침·기상 시간 고정 (주말 편차 1시간 이내)<br><strong>🧪 영양 지원:</strong> 마그네슘 글리시네이트, L-테아닌`,
+    4:`<strong>🧘 스트레스 설계:</strong> 4-7-8 호흡 하루 2회, 5분 산책 루틴, 스트레스→음식 연결 차단<br><strong>😴 수면 연계:</strong> 수면 개선 없이 식단·운동만 바꿔서는 효과 제한됨<br><strong>🧪 영양 지원:</strong> 마그네슘 400mg, 아슈와간다`,
+    5:`<strong>🏡 환경 설계:</strong> 금연(최우선), 음주 주2회 이하, 주방 건강식품 배치, 운동화 현관 배치<br><strong>🌿 독소 관리:</strong> BPA-free 용기, 미세먼지 높은 날 실외활동 자제<br><strong>🧪 영양 지원:</strong> NAC, 밀크씨슬, 비타민C`,
+    6:`<strong>👥 연결 설계:</strong> 건강 목표를 가족·친구에게 공유, 운동 모임 참여, 전문가 정기 상담<br><strong>📣 공개 선언:</strong> 공개 선언은 실천율 33% 향상 (연구 근거)<br><strong>🧪 영양 지원:</strong> 비타민D, 오메가-3`,
+    7:`<strong>📚 리터러시 설계:</strong> TG/HDL 비율·NLR 직접 계산, 검진 결과 추세 기록, 3개월 후 재검 일정 등록<br><strong>📊 수치 모니터링:</strong> 이번 주 결과지를 꺼내 회색지대 수치를 생활습관과 연결해보세요<br><strong>🧪 영양 지원:</strong> 검진 결과에서 부족한 영양소 우선 보충`,
+    8:`<strong>🎨 여가 설계:</strong> 화면 없는 오프라인 활동 30분/일, 신체 활성 취미 1개, 사회적 여가 월2회<br><strong>😴 회복 연계:</strong> 소모형 여가(과음·야식 동반) → 회복형 여가(걷기·독서·명상) 전환<br><strong>🧪 영양 지원:</strong> 비타민D, 마그네슘, 오메가-3`
+  };
+
+  combined.forEach(a=>{
+    const relatedAbnormal=Object.entries(checkupData)
+      .filter(([,d])=>d.status!=='ok'&&d.bm.domains&&d.bm.domains.includes(a.id))
+      .map(([,d])=>d.bm.name);
+    const div=document.createElement('div');
+    div.className='is-domain';
+    div.style.borderColor=domainColors[a.id];
+    div.style.background=domainColors[a.id]+'12';
+    div.innerHTML=`<h4 style="color:${domainColors[a.id]}">${a.icon} ${a.name} — ${a.sub}</h4>
+      ${relatedAbnormal.length?`<div class="is-pills">${relatedAbnormal.map(n=>`<span class="is-pill" style="background:${domainColors[a.id]}20;color:${domainColors[a.id]}">${n}</span>`).join('')}</div>`:''}
+      <div class="is-detail">${designMap[a.id]||'해당 영역의 낮은 세부차원부터 생활습관을 개선해보세요.'}</div>`;
+    body.appendChild(div);
+  });
+}
+
+function getWeakTip(id){
+  const tips={
+    1:'채소→단백질→탄수화물 순서로 먹기부터 시작하세요. 야식과 정제 탄수화물만 줄여도 혈당·체중이 달라집니다.',
+    2:'오늘 당장 만보계 앱을 설치하고 7,000보를 목표로 설정하세요. 30~40분마다 일어서는 알람도 함께 설정하세요.',
+    3:'오늘 밤부터 취침 1시간 전 스마트폰을 끄고, 오후 2시 이후 카페인을 끊어보세요. 1주일이면 수면 질이 달라집니다.',
+    4:'스트레스를 받을 때 음식으로 풀지 않겠다는 규칙 하나만 만들어보세요. 산책 5분이 폭식보다 훨씬 효과적입니다.',
+    5:'냉장고와 주방에서 고열량 간식을 치우고, 운동화를 현관 잘 보이는 곳에 놓아두세요. 환경이 습관을 만듭니다.',
+    6:'건강 목표를 가족 1명에게 공유하고 응원을 부탁해보세요. 사회적 지지가 혼자 의지력에 의존하는 것보다 2배 효과적입니다.',
+    7:'이번 주 건강검진 결과표를 꺼내 혈당·혈압·콜레스테롤·허리둘레 수치가 정상 범위인지 직접 확인해보세요.',
+    8:'이번 주 화면 없는 여가 활동 1가지를 30분 이상 실천해보세요. 산책·독서·요리·악기 등 몸을 쓰는 취미가 우선입니다.'
+  };
+  return tips[id]||'해당 영역의 가장 낮은 세부 차원부터 집중 개선하세요.';
+}
+
+function getActionItems(id){
+  const actions={
+    1:'<strong>내일 식사부터</strong> 채소 반찬을 먼저 다 먹고, 그다음 단백질, 마지막에 밥을 먹는 순서를 실천해보세요. 혈당 스파이크가 최대 40% 감소합니다.',
+    2:'<strong>지금 바로</strong> 스마트폰에 "30분마다 일어서기" 알람을 설정하세요. 그리고 오늘 귀갓길에 한 정거장 먼저 내려 걷기를 실천해보세요.',
+    3:'<strong>오늘 밤</strong> 침실에서 스마트폰을 내보내거나 화면을 뒤집어두세요. 취침 1시간 전부터 화면 차단 + 오후 2시 이후 카페인 제로를 시작해보세요.',
+    4:'<strong>스트레스 신호 감지 즉시</strong> 냉장고 대신 신발을 신어보세요. 5분 산책이 폭식 충동을 90% 이상 줄인다는 연구가 있습니다.',
+    5:'<strong>오늘 저녁</strong> 주방 서랍과 냉장고에서 고열량 간식을 전부 꺼내 눈에 안 보이는 곳에 두거나 버리세요. 과일과 견과류를 보기 좋은 자리에 올려두세요.',
+    6:'<strong>오늘 중으로</strong> 가족·친구에게 "나 지금 건강 관리 시작하려고 해, 응원해줘"라고 문자 1개를 보내세요. 공개 선언은 실천율을 33% 높입니다.',
+    7:'<strong>이번 주 안에</strong> 가장 최근 건강검진 결과표를 꺼내 혈당(공복 100mg/dL 미만), 혈압(120/80mmHg 미만), 허리둘레(남 90cm, 여 85cm 미만) 기준과 내 수치를 직접 비교해보세요.',
+    8:'<strong>이번 주말</strong> 스마트폰 없이 30분 이상 산책 또는 독서를 해보세요. 이 1가지만으로도 코르티솔이 감소하고 회복감이 올라옵니다.'
+  };
+  return actions[id]||'해당 영역의 세부 차원 점수를 확인하고 가장 낮은 곳부터 집중 개선하세요.';
+}
+
+function buildEvidence(){
+  const el=document.getElementById('ev-content');
+  el.innerHTML='';
+  AREAS.forEach(a=>{
+    const block=document.createElement('div');
+    block.className='ev-area-block';
+    block.innerHTML=`<h4>${a.icon} ${a.name} — ${a.sub}</h4>`;
+    a.dims.forEach(d=>{
+      const ref=document.createElement('div');
+      ref.className='ev-ref';
+      ref.innerHTML=`<strong>[${d.letter}] ${d.name}</strong> — ${d.ref}`;
+      block.appendChild(ref);
+    });
+    el.appendChild(block);
+  });
+}
+
+function toggleEvidence(){
+  const toggle=document.getElementById('ev-toggle');
+  const content=document.getElementById('ev-content');
+  toggle.classList.toggle('open');
+  content.classList.toggle('show');
+}
+
+function toggleFounderStory(){
+  const content=document.getElementById('founderContent');
+  const arrow=document.getElementById('founderArrow');
+  content.classList.toggle('show');
+  arrow.classList.toggle('open');
+}
+
+function updateName(){
+  // placeholder for name personalization
+}
+
+// ════════════════════════════════════════
+//  RADAR CHART
+// ════════════════════════════════════════
+// ════════════════════════════════════════
+//  SHARE FUNCTIONS
+// ════════════════════════════════════════
+function initKakao(){
+  if(window.Kakao && !Kakao.isInitialized()){
+    // 카카오 개발자 앱 JS키 입력 필요 — GitHub Pages 배포 후 설정
+    // Kakao.init('YOUR_KAKAO_JS_KEY');
+  }
+}
+
+function shareKakao(){
+  const url = window.location.href;
+  const title = '🌿 건강만다라 만성질환 예방 진단';
+  const desc = '검진수치와 습관 점수를 함께 살펴보는 건강만다라 통합분석 | 8영역 64문항';
+  // 카카오 SDK 미설정 시 링크 공유로 대체
+  if(window.Kakao && Kakao.isInitialized()){
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: title,
+        description: desc,
+        imageUrl: 'https://mandala-gamma.vercel.app/preview.jpg',
+        link: { mobileWebUrl: url, webUrl: url }
+      },
+      buttons:[{title:'진단하러 가기', link:{mobileWebUrl:url,webUrl:url}}]
+    });
+  } else {
+    // 카카오톡 앱으로 직접 공유 (모바일)
+    const kakaoUrl = `kakaotalk://msg/send?text=${encodeURIComponent(title + '\n' + desc + '\n' + url)}`;
+    const fallback = `https://sharer.kakao.com/talk/friends/picker/link?app_key=&link_ver=4.0&template_id=&url=${encodeURIComponent(url)}`;
+    if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+      window.location.href = kakaoUrl;
+      setTimeout(()=>{ copyLink(); }, 1500);
+    } else {
+      copyLink();
+    }
+  }
+}
+
+function isInAppBrowser(){
+  const ua = navigator.userAgent || '';
+  return /KAKAOTALK|Instagram|NAVER\(inapp;|FBAN|FBAV|Line\//i.test(ua);
+}
+
+function copyLinkForExternalBrowser(){
+  const url = window.location.href;
+  const done = ()=>showToast('🔗 링크가 복사되었어요! Safari/Chrome 주소창에 붙여넣어 열어주세요.');
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(done);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    done();
+  }
+}
+
+if(isInAppBrowser()){
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const el=document.getElementById('inappBanner');
+    if(el) el.style.display='block';
+  });
+}
+
+function copyLink(){
+  const url = window.location.href;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>{
+      showToast('🔗 무료 프리미엄 진단 링크가 복사되었어요! 카카오톡에 붙여넣기 하세요.');
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('🔗 무료 프리미엄 진단 링크가 복사되었어요! 카카오톡에 붙여넣기 하세요.');
+  }
+}
+
+function showToast(msg){
+  let toast = document.getElementById('toast-msg');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'toast-msg';
+    toast.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+      background:#1B2E22;color:#fff;padding:12px 20px;border-radius:24px;
+      font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;
+      box-shadow:0 4px 20px rgba(0,0,0,.3);font-family:'Noto Sans KR',sans-serif;`;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  setTimeout(()=>{ toast.style.opacity='0'; }, 3000);
+}
+
+function drawRadar(areaScores){
+  const canvas=document.getElementById('radarCanvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const cx=W/2, cy=H/2, r=Math.min(W,H)/2-40;
+  const n=8;
+  const angles=Array.from({length:n},(_,i)=>((2*Math.PI/n)*i)-Math.PI/2);
+
+  ctx.clearRect(0,0,W,H);
+
+  // Grid
+  for(let level=1;level<=4;level++){
+    ctx.beginPath();
+    angles.forEach((angle,i)=>{
+      const x=cx+Math.cos(angle)*(r*(level/4));
+      const y=cy+Math.sin(angle)*(r*(level/4));
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle=`rgba(45,106,79,${0.1+level*0.05})`;
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.fillStyle='rgba(240,250,243,0.3)';
+    ctx.fill();
+  }
+
+  // Axes
+  angles.forEach(angle=>{
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+    ctx.strokeStyle='rgba(45,106,79,0.2)';
+    ctx.lineWidth=1;
+    ctx.stroke();
+  });
+
+  // Data polygon
+  ctx.beginPath();
+  areaScores.forEach((a,i)=>{
+    const ratio=a.score/32;
+    const x=cx+Math.cos(angles[i])*r*ratio;
+    const y=cy+Math.sin(angles[i])*r*ratio;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle='rgba(82,183,136,0.3)';
+  ctx.fill();
+  ctx.strokeStyle='rgba(45,106,79,0.9)';
+  ctx.lineWidth=2.5;
+  ctx.stroke();
+
+  // Dots
+  areaScores.forEach((a,i)=>{
+    const ratio=a.score/32;
+    const x=cx+Math.cos(angles[i])*r*ratio;
+    const y=cy+Math.sin(angles[i])*r*ratio;
+    ctx.beginPath();
+    ctx.arc(x,y,5,0,2*Math.PI);
+    ctx.fillStyle=a.color||'#2D6A4F';
+    ctx.fill();
+    ctx.strokeStyle='#fff';
+    ctx.lineWidth=2;
+    ctx.stroke();
+  });
+
+  // Labels
+  ctx.font='bold 12px "Noto Sans KR", sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  areaScores.forEach((a,i)=>{
+    const lx=cx+Math.cos(angles[i])*(r+26);
+    const ly=cy+Math.sin(angles[i])*(r+26);
+    ctx.fillStyle=a.color||'#2D6A4F';
+    ctx.fillText(`${a.icon}${a.name}`,lx,ly-5);
+    ctx.fillStyle='var(--text-light)';
+    ctx.font='10px "Noto Sans KR"';
+    ctx.fillText(`${a.pctVal}%`,lx,ly+8);
+    ctx.font='bold 12px "Noto Sans KR", sans-serif';
+  });
+}
+
+// ──────────────────────────────────────────
+//  PREMIUM REPORT
+// ──────────────────────────────────────────
+function openPremiumModal(){
+  document.getElementById('premiumError').style.display='none';
+  document.getElementById('premiumModal').classList.add('show');
+}
+function closePremiumModal(){
+  document.getElementById('premiumModal').classList.remove('show');
+}
+
+function collectAreaScoresForReport(){
+  return AREAS.map(a=>{
+    const lowest=getLowestDimension(a);
+    return {
+      id:a.id, name:a.name, sub:a.sub, icon:a.icon, color:a.color,
+      score:getAreaScore(a.id), pctVal:pct(getAreaScore(a.id),32),
+      weakestDim:{letter:lowest.letter, name:lowest.name, pctVal:lowest.pctVal}
+    };
+  });
+}
+
+const DIM_LETTERS_FOR_CODE=['A','B','C','D'];
+
+function collectLowScoreItemsForReport(){
+  const items=[];
+  AREAS.forEach(area=>{
+    area.dims.forEach((dim,di)=>{
+      dim.questions.forEach((qText,qi)=>{
+        const key=`${area.id}-${di}-${qi}`;
+        if(answers[key]===1){
+          items.push({code:`${area.id}-${DIM_LETTERS_FOR_CODE[di]}-${qi+1}`, question:qText});
+        }
+      });
+    });
+  });
+  return items;
+}
+
+function generateDiagnosisId(){
+  return Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+}
+
+function logDiagnosisToSheet(areaScores,totalScore){
+  currentDiagnosisId=generateDiagnosisId();
+  const lowScoreItems=collectLowScoreItemsForReport();
+  fetch('/api/log-diagnosis',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({id:currentDiagnosisId,areaScores,lowScoreItems,totalScore})
+  }).catch(()=>{});
+}
+
+function collectCheckupSummaryForReport(){
+  return Object.entries(checkupData).map(([key,data])=>({
+    key, name:data.bm.name, value:data.value, unit:data.bm.unit||'', status:data.status, supp:data.bm.supp||''
+  }));
+}
+
+// target 문자열은 BIOMARKERS[key].grade()의 정상 판정 경계값을 그대로 옮긴 값이다.
+// grade() 임계값을 바꾸면 아래 target 문자열도 함께 갱신해야 한다.
+function collectTargetTableForReport(){
+  const rows=[];
+  const pushRow=(key,name,unit,target)=>{
+    const entry=checkupData[key];
+    if(!entry) return;
+    const note=(entry.bm.habit||'').split(',')[0]||'';
+    rows.push({key,name,current:entry.value,unit,target,note});
+  };
+  pushRow('bmi','체질량지수(BMI)','kg/m²','23 미만');
+  pushRow('waist','허리둘레','cm', gender()==='f' ? '80cm 미만' : '85cm 미만');
+  const sbpEntry=checkupData['sbp'], dbpEntry=checkupData['dbp'];
+  if(sbpEntry && dbpEntry){
+    const note=(sbpEntry.bm.habit||'').split(',')[0]||'';
+    rows.push({key:'bp',name:'혈압',current:`${sbpEntry.value}/${dbpEntry.value}`,unit:'mmHg',target:'120/80 미만',note});
+  }
+  pushRow('fbg','공복혈당','mg/dL','100 미만');
+  pushRow('hba1c','당화혈색소(HbA1c)','%','5.7 미만');
+  pushRow('tg','중성지방','mg/dL','150 미만');
+  pushRow('vitd','비타민 D','ng/mL','30 이상');
+  return rows;
+}
+
+async function submitPremiumLead(){
+  const name=document.getElementById('premiumName').value.trim();
+  const age=document.getElementById('premiumAge').value.trim();
+  const genderVal=document.getElementById('premiumGender').value;
+  const contact=document.getElementById('premiumContact').value.trim();
+  const email=document.getElementById('premiumEmail').value.trim();
+  const consent=document.getElementById('premiumConsent').checked;
+  const honeypot=document.getElementById('premiumHoneypot').value;
+  const errEl=document.getElementById('premiumError');
+  const btn=document.getElementById('premiumSubmitBtn');
+
+  errEl.style.display='none';
+
+  if(!consent){
+    errEl.textContent='개인정보 수집 및 건강정보광고 수신에 동의해주세요.';
+    errEl.style.display='block';
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='리포트 생성 중...';
+
+  const areaScores=collectAreaScoresForReport();
+  const totalScore=areaScores.reduce((s,a)=>s+a.score,0);
+  const checkupSummary=collectCheckupSummaryForReport();
+  const targetTable=collectTargetTableForReport();
+  const lowScoreItems=collectLowScoreItemsForReport();
+
+  const loadingOverlay=document.getElementById('loadingOverlay');
+  const loadingTitle=document.getElementById('loadingTitle');
+  const loadingSub=document.getElementById('loadingSub');
+  const PREMIUM_LOADING_MESSAGES=[
+    ['AI가 8개 영역을 정밀 분석하고 있어요','검진 수치와 습관 데이터를 통합하는 중입니다'],
+    ['근거 자료를 바탕으로 맞춤 조언을 작성 중이에요','보통 1~2분 정도 걸려요, 잠시만 기다려주세요'],
+    ['영양·행동 계획까지 정리하고 있어요','멈춘 게 아니라 열심히 분석 중이니 조금만 더 기다려주세요']
+  ];
+  let msgIdx=0;
+  function setPremiumLoadingMsg(){
+    const [t,s]=PREMIUM_LOADING_MESSAGES[msgIdx % PREMIUM_LOADING_MESSAGES.length];
+    loadingTitle.textContent=t;
+    loadingSub.textContent=s;
+    msgIdx++;
+  }
+  setPremiumLoadingMsg();
+  loadingOverlay.classList.add('show');
+  const msgInterval=setInterval(setPremiumLoadingMsg,7000);
+
+  try{
+    const resp=await fetch('/api/generate-report',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:currentDiagnosisId,name,age,gender:genderVal,contact,email,consent,honeypot,areaScores,checkupSummary,totalScore,lowScoreItems})
+    });
+    const data=await resp.json();
+    if(!resp.ok){
+      throw new Error(data.error||'요청 처리 중 문제가 발생했습니다');
+    }
+    sessionStorage.setItem('premiumReport',JSON.stringify({
+      report:data.report, name, age, gender:genderVal, areaScores, checkupSummary, targetTable, totalScore
+    }));
+    window.location.href='/report.html';
+  }catch(err){
+    errEl.textContent='리포트 생성에 실패했습니다. 잠시 후 다시 시도해주세요.';
+    errEl.style.display='block';
+  }finally{
+    clearInterval(msgInterval);
+    loadingOverlay.classList.remove('show');
+    loadingTitle.textContent='결과를 분석하고 있습니다...';
+    loadingSub.textContent='최약점 영역을 찾는 중';
+    btn.disabled=false;
+    btn.textContent='리포트 받기';
+  }
+}
+</script>
+</body>
+</html>

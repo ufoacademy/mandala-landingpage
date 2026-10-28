@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>건강만다라 | 새 디자인 PDF 샘플</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B2A47; --navy-dark:#101B30; --gold:#C9A227;
+  --bg:#F5F7FA; --ink:#1B2230; --ink-mid:#4A5568; --ink-light:#8A94A6;
+  --border:#E3E8F0; --insight-bg:#EEF4F1; --insight-border:#2E7D5B;
+  --highlight-bg:#FBF3E3; --highlight-border:#D97706;
+}
+@page { size: A4; margin: 12mm; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body { font-family:'Noto Sans KR',sans-serif; color:var(--ink); background:var(--bg); }
+.toolbar { position:sticky; top:0; background:var(--navy); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; z-index:10; }
+.toolbar span { font-weight:700; font-size:14px; }
+.toolbar button { background:var(--gold); color:var(--navy-dark); border:none; border-radius:8px; padding:10px 18px; font-weight:700; cursor:pointer; font-size:13px; }
+.report-root { margin:0 auto; padding:20px 16px 60px; }
+/* width를 인쇄 시 실제 본문 폭(A4 210mm - 좌우 여백 12mm×2)과 동일한 186mm로 고정한다.
+   화면 미리보기 폭이 인쇄 폭보다 넓으면 줄바꿈이 달라져, 화면에서 계산한 여백 채움/분할
+   로직(fitMemoBlocks, splitOverflowingPages)이 실제 인쇄 결과와 어긋나는 문제가 있었다. */
+.report-page { width:186mm; max-width:100%; margin-left:auto; margin-right:auto; background:#fff; border-radius:10px; box-shadow:0 2px 16px rgba(16,27,48,.08); overflow:hidden; margin-bottom:22px; display:flex; flex-direction:column; min-height:273mm; }
+.page-header { background:var(--navy); color:#fff; padding:20px 26px 14px; }
+.page-header-top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.chapter-num { font-size:11px; font-weight:700; color:var(--gold); letter-spacing:.06em; margin-bottom:3px; }
+.page-header h1 { font-size:18px; font-weight:900; line-height:1.35; }
+.page-header .chapter-sub { font-size:11px; color:rgba(255,255,255,.65); margin-top:4px; }
+.page-number { font-size:12px; font-weight:700; color:rgba(255,255,255,.55); flex-shrink:0; }
+.gold-rule { height:3px; background:linear-gradient(90deg,var(--gold),rgba(201,162,39,.15)); margin-top:12px; }
+.page-body { padding:20px 26px 16px; }
+.page-footer { font-size:9.5px; color:var(--ink-light); text-align:center; padding:10px 20px 16px; border-top:1px solid var(--border); margin-top:auto; line-height:1.6; }
+.memo-block { border:1px dashed var(--border); border-radius:8px; padding:10px 14px; margin-top:18px; }
+.memo-block .memo-label { font-size:10px; color:var(--ink-light); font-weight:700; letter-spacing:.03em; margin-bottom:8px; }
+.memo-block .memo-lines { height:70px; background-image:repeating-linear-gradient(to bottom, transparent, transparent 16px, var(--border) 16px, var(--border) 17px); }
+@media print {
+  .no-print { display:none !important; }
+  body { background:#fff; }
+  .report-root { padding:0; }
+  .report-page { box-shadow:none; border-radius:0; margin:0; page-break-after:always; }
+  .report-page:last-child { page-break-after:auto; }
+}
+
+/* 인쇄/PDF 저장 시 카드형 박스가 페이지 경계에서 잘리지 않고 통째로 다음 페이지로 넘어가게 함 */
+.insight-card, .positioning-box, .age-group-box, .subject-card, .stat-card,
+.pair-card, .middle-box, .highlight-box, .nutrition-card, .conclusion-block,
+.roadmap-row, .messaging-box, .memo-block, .target-table tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* 표지 */
+.cover-hero { background:linear-gradient(135deg,var(--navy),var(--navy-dark)); color:#fff; padding:26px 26px 22px; }
+.cover-hero .badge { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:16px; padding:5px 12px; font-size:10px; font-weight:700; margin-bottom:10px; }
+.cover-hero h1 { font-size:21px; line-height:1.4; margin-bottom:8px; }
+.cover-hero .sub { font-size:11.5px; color:rgba(255,255,255,.6); margin-bottom:14px; }
+.cover-hero p.greeting { font-size:12px; line-height:1.8; opacity:.92; }
+.subject-card { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin:18px 26px 0; }
+.limited-notice { margin:12px 26px 0; background:#FEF3C7; border:1px solid #F0DDB0; border-radius:10px; padding:10px 14px; font-size:11px; color:#92650A; }
+.subject-row { display:flex; flex-wrap:wrap; gap:6px 20px; font-size:11.5px; color:var(--ink-mid); }
+.subject-row strong { color:var(--ink); }
+.insight-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:18px 26px 0; }
+.insight-card { background:var(--insight-bg); border-left:3px solid var(--insight-border); border-radius:8px; padding:12px 14px; font-size:11px; line-height:1.6; }
+.positioning-box { margin:18px 26px 20px; background:var(--highlight-bg); border:1px solid #F0DDB0; border-radius:10px; padding:14px 16px; }
+.positioning-box h3 { font-size:12px; color:#92650A; margin-bottom:6px; }
+.positioning-box p { font-size:11px; line-height:1.7; color:#5C3D07; }
+.age-group-box { margin:0 26px 18px; background:var(--insight-bg); border-left:3px solid var(--insight-border); border-radius:10px; padding:12px 16px; }
+.age-group-box h3 { font-size:11.5px; color:var(--insight-border); margin-bottom:5px; }
+.age-group-box p { font-size:11px; line-height:1.7; color:var(--ink-mid); }
+
+/* 대시보드 */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.stat-card { background:var(--bg); border-radius:8px; padding:8px 10px; }
+.stat-card .label { font-size:9px; color:var(--ink-light); margin-bottom:2px; }
+.stat-card .value { font-size:15px; font-weight:900; color:var(--navy); }
+.stat-card .interp { font-size:9px; color:var(--ink-mid); margin-top:1px; }
+.summary-table-cols { display:grid; grid-template-columns:1fr 1fr; gap:0 14px; page-break-inside:avoid; }
+.summary-table { width:100%; border-collapse:collapse; font-size:10px; }
+.summary-table th { background:var(--bg); text-align:left; padding:5px 8px; color:var(--ink-mid); font-weight:700; }
+.summary-table td { padding:5px 8px; border-bottom:1px solid var(--border); }
+
+/* 8영역 맵 */
+.radar-wrap { display:flex; justify-content:center; margin-bottom:10px; }
+.area-grid { display:flex; justify-content:space-between; gap:6px; margin-bottom:6px; }
+.area-grid-item { flex:1; min-width:0; text-align:center; }
+.area-grid-item .name { font-size:9.5px; font-weight:700; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.area-grid-item .mini-track { background:var(--bg); border-radius:3px; height:5px; margin:4px 1px; overflow:hidden; }
+.area-grid-item .mini-fill { height:100%; background:var(--navy); }
+.area-grid-item .pct { font-size:11.5px; font-weight:900; color:var(--ink); }
+.area-interp-list { margin-top:16px; }
+.area-interp-list li { list-style:none; font-size:11.5px; line-height:1.7; margin-bottom:9px; color:var(--ink-mid); }
+.area-interp-list strong { color:var(--navy); }
+
+/* 페어 섹션 */
+.pair-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.pair-card { background:var(--bg); border-radius:8px; padding:12px 14px; }
+.pair-card h4 { font-size:12px; color:var(--navy); margin-bottom:6px; }
+.pair-card p { font-size:11.5px; line-height:1.7; color:var(--ink-mid); }
+.middle-box { background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:14px; }
+.middle-box h4 { font-size:12px; color:var(--navy); margin-bottom:6px; }
+.middle-box p { font-size:11.5px; line-height:1.7; color:var(--ink-mid); }
+.highlight-box { background:var(--highlight-bg); border-left:3px solid var(--highlight-border); border-radius:8px; padding:12px 14px; }
+.highlight-box h4 { font-size:12px; color:#92650A; margin-bottom:6px; }
+.highlight-box ul { padding-left:16px; }
+.highlight-box li { font-size:11.5px; line-height:1.7; color:#5C3D07; margin-bottom:3px; }
+
+/* 목표치 설계 */
+.target-table { width:100%; border-collapse:collapse; font-size:11.5px; margin-bottom:16px; }
+.target-table th { background:var(--bg); padding:8px 10px; text-align:left; color:var(--ink-mid); }
+.target-table td { padding:8px 10px; border-bottom:1px solid var(--border); }
+.target-table .mech-note { display:inline-block; margin-top:3px; color:var(--ink-light); font-size:10px; font-style:italic; line-height:1.5; }
+.priority-box { background:var(--insight-bg); border-radius:8px; padding:14px 16px; margin-bottom:14px; font-size:11.5px; line-height:1.7; color:var(--ink-mid); }
+.hope-box { background:var(--highlight-bg); border-radius:8px; padding:14px 16px; font-size:11.5px; line-height:1.7; color:#5C3D07; }
+
+/* 영양설계 */
+.nutrition-summary { font-size:11.5px; line-height:1.7; color:var(--ink-mid); margin-bottom:14px; }
+.nutrition-card { background:var(--bg); border-left:3px solid var(--insight-border); border-radius:8px; padding:12px 14px; margin-bottom:10px; }
+.nutrition-card:last-child { margin-bottom:0; }
+.nutrition-card h4 { font-size:12.5px; color:var(--ink); margin-bottom:4px; }
+.nutrition-card p { font-size:11.5px; line-height:1.7; color:var(--ink-mid); margin-bottom:6px; }
+.nutrition-card .evidence-source { font-size:10.5px; color:var(--insight-border); font-weight:700; }
+
+/* 로드맵 */
+.roadmap-row { display:flex; gap:10px; margin-bottom:8px; font-size:11.5px; }
+.roadmap-week { width:60px; flex-shrink:0; font-weight:700; color:var(--navy); }
+.messaging-box { background:var(--highlight-bg); border-radius:8px; padding:14px 16px; margin-top:16px; }
+.messaging-box h4 { font-size:12px; color:#92650A; margin-bottom:8px; }
+.messaging-box ul { padding-left:16px; }
+.messaging-box li { font-size:11.5px; line-height:1.8; color:#5C3D07; }
+
+/* 최종 결론 */
+.conclusion-block { background:var(--bg); border-radius:8px; padding:14px 16px; margin-bottom:12px; }
+.conclusion-block:last-child { margin-bottom:0; }
+.conclusion-block h4 { font-size:12.5px; color:var(--navy); margin-bottom:6px; }
+.conclusion-block p { font-size:12px; line-height:1.75; color:var(--ink-mid); }
+.conclusion-block ol { padding-left:18px; margin-top:6px; }
+.conclusion-block ol li { font-size:12px; line-height:1.8; color:var(--ink-mid); margin-bottom:4px; }
+
+.error-box { text-align:center; padding:80px 20px; }
+.error-box h2 { font-size:18px; margin-bottom:10px; }
+.error-box a { color:var(--navy); font-weight:700; text-decoration:underline; }
+.inapp-banner { display:none; background:#FFF3E0; border-bottom:2px solid #E07B39; padding:12px 20px; font-size:12.5px; line-height:1.7; color:#7A4A1E; }
+.inapp-banner.show { display:block; }
+.inapp-banner strong { color:#B94A00; }
+.inapp-banner button { margin-top:8px; background:var(--navy); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-weight:700; font-size:12px; cursor:pointer; }
+</style>
+<link rel="stylesheet" href="/report-theme.css">
+</head>
+<body><div class="result-demo-banner no-print">새 디자인 샘플 · 실제 개인 진단 결과가 아닙니다. <a href="/premium.html#preview">판매 페이지로 돌아가기</a></div>
+<div class="inapp-banner no-print" id="inappBanner">
+  <strong>⚠️ PDF 저장이 안 되시나요?</strong> 카카오톡·인스타그램 등 앱 내 브라우저에서는 인쇄/PDF 기능이 지원되지 않습니다.<br>
+  화면 우측 상단(또는 하단) <strong>'···' 메뉴 → 다른 브라우저로 열기(Safari/Chrome)</strong>를 선택해주세요.<br>
+  <button onclick="copyReportLink()" id="copyLinkBtn">🔗 이 링크 복사하기</button>
+</div>
+<div class="toolbar no-print">
+  <span>📘 건강만다라 프리미엄 리포트</span>
+  <button onclick="handlePrintClick()">🖨️ 인쇄 / PDF로 저장</button>
+</div>
+<div class="report-root" id="reportRoot"></div>
+
+<script src="/report-sample.js"></script>
+<script>
+function isInAppBrowser() {
+  const ua = navigator.userAgent || '';
+  return /KAKAOTALK|Instagram|NAVER\(inapp;|FBAN|FBAV|Line\//i.test(ua);
+}
+
+function handlePrintClick() {
+  if (isInAppBrowser()) {
+    document.getElementById('inappBanner').classList.add('show');
+    document.getElementById('inappBanner').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  window.print();
+}
+
+function copyReportLink() {
+  const btn = document.getElementById('copyLinkBtn');
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    btn.textContent = '✅ 복사 완료! Safari/Chrome에 붙여넣기 하세요';
+    setTimeout(() => { btn.textContent = '🔗 이 링크 복사하기'; }, 3000);
+  }).catch(() => {
+    btn.textContent = '복사 실패 - 주소창에서 직접 복사해주세요';
+  });
+}
+
+if (isInAppBrowser()) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('inappBanner').classList.add('show');
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function linesToListItems(str) {
+  return (str || '')
+    .split('\n')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => `<li>${escapeHtml(s)}</li>`)
+    .join('');
+}
+
+function renderError() {
+  document.getElementById('reportRoot').innerHTML = `
+    <div class="error-box">
+      <h2>리포트 정보를 찾을 수 없습니다</h2>
+      <p style="margin-top:10px;color:var(--ink-mid);">진단을 먼저 완료한 뒤 프리미엄 리포트를 요청해주세요.</p>
+      <p style="margin-top:16px;"><a href="diagnosis.html">진단 페이지로 돌아가기</a></p>
+    </div>`;
+}
+
+const PAIR_META = [
+  { label: '식 & 동', subtitle: '혈당·체중·활동 설계' },
+  { label: '휴 & 심', subtitle: '수면 회복과 정서 조절' },
+  { label: '환 & 연', subtitle: '환경과 지지망 재설계' },
+  { label: '지 & 락', subtitle: '정보 리터러시와 건강 여가' },
+];
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+const FOOTER_HTML = '<footer class="page-footer"><div>© 2026 건강이음센터. 본 리포트는 생활습관 코칭 참고용이며 의학적 진단을 대체하지 않습니다. (저작권등록번호 C-2026-026168)</div><div>진단 문항 HM-8D64-2026.09 · 점수 산식 HM-POMP-0-100-v1 · 기업·기관 사용 문의 : mandala@healtheum.co.kr</div></footer>';
+
+const MEMO_HTML = `
+    <div class="memo-block">
+      <div class="memo-label">📝 메모</div>
+      <div class="memo-lines"></div>
+    </div>`;
+
+// .report-page의 min-height(273mm = A4 297mm - 위아래 여백 12mm×2)와 반드시 일치해야 한다.
+const PAGE_CONTENT_HEIGHT_MM = 273;
+// 화면(스크린 레이아웃)에서 잰 높이와 실제 인쇄/PDF 변환 엔진이 페이지를 나누는 지점 사이에는
+// 줄바꿈·서브픽셀 반올림 차이로 몇 px의 오차가 생길 수 있다. 여백 채움/분할 판정을 딱 그
+// 경계값까지 채우면 실제 인쇄에서만 한 줄이 다음 페이지로 밀려 빈 페이지가 생기므로,
+// 판정 기준에서 이만큼을 항상 여유로 남겨둔다.
+const LAYOUT_SAFETY_BUFFER_PX = 40;
+
+function wrapPage(chapterIndex, pageNumber, title, subtitle, bodyHtml, noMemo) {
+  // 메모는 일단 슬롯으로만 표시해두고, 렌더링 후 실제 남는 공간을 측정해서
+  // fitMemoBlocks()가 넣거나 뺀다 — 본문 내용과 합쳐 페이지가 넘치는 원인이 되지 않도록.
+  const memoHtml = (!noMemo && pageNumber >= 3) ? `<div class="memo-slot">${MEMO_HTML}</div>` : '';
+  return `
+  <section class="report-page">
+    <header class="page-header">
+      <div class="page-header-top">
+        <div>
+          <div class="chapter-num">${pad2(chapterIndex)}.</div>
+          <h1>${escapeHtml(title)}</h1>
+          <p class="chapter-sub">${escapeHtml(subtitle)}</p>
+        </div>
+        <div class="page-number">${pageNumber}</div>
+      </div>
+      <div class="gold-rule"></div>
+    </header>
+    <div class="page-body">${bodyHtml}${memoHtml}</div>
+    ${FOOTER_HTML}
+  </section>`;
+}
+
+function renderAgeGroupBox(ageGroupInsight) {
+  if (!ageGroupInsight || !ageGroupInsight.diseaseName) return '';
+  return `
+    <div class="age-group-box">
+      <h3>👥 같은 연령대·성별 예방 신호</h3>
+      <p>${escapeHtml(ageGroupInsight.motivationalSentence || '')}</p>
+    </div>`;
+}
+
+function renderCoverPage(data, pageNumber) {
+  const { report, name, age, gender, checkupSummary, totalScore, totalScorePct } = data;
+  const insightCards = (report.coreInsights || [])
+    .map((t) => `<div class="insight-card">${escapeHtml(t)}</div>`)
+    .join('');
+
+  const subjectParts = [`<strong>${escapeHtml(name || '고객')}님</strong>`];
+  if (age) subjectParts.push(`${escapeHtml(age)}세`);
+  if (gender) subjectParts.push(gender === 'f' ? '여성' : '남성');
+  const bmiEntry = (checkupSummary || []).find((c) => c.key === 'bmi');
+  const waistEntry = (checkupSummary || []).find((c) => c.key === 'waist');
+  if (bmiEntry) subjectParts.push(`BMI ${escapeHtml(bmiEntry.value)}`);
+  if (waistEntry) subjectParts.push(`허리둘레 ${escapeHtml(waistEntry.value)}cm`);
+  const normalizedTotal = Number.isFinite(Number(totalScorePct)) ? Number(totalScorePct) : '';
+  subjectParts.push(`건강만다라 총점 ${escapeHtml(totalScore)}/256${normalizedTotal !== '' ? ` · 표준점수 ${escapeHtml(normalizedTotal)}%` : ''}`);
+
+  return `
+  <section class="report-page">
+    <div class="cover-hero">
+      <div class="badge">🎁 검진수치와 습관 점수를 함께 분석한 프리미엄 AI 리포트</div>
+      <h1>${escapeHtml(name || '고객')}님, 건강만다라로 몸의 패턴을 읽었습니다</h1>
+      <p class="sub">검진결과 × 생활습관 × 건강만다라 8영역 통합분석 리포트</p>
+      <p class="greeting">${escapeHtml(report.greeting || '')}</p>
+    </div>
+    <div class="subject-card">
+      <div class="subject-row">${subjectParts.join(' · ')}</div>
+    </div>
+    ${data.limited ? `<div class="limited-notice">⚠️ 이전 기록은 일부 상세 수치가 저장되지 않았습니다.</div>` : ''}
+    <div class="insight-grid">${insightCards}</div>
+    ${renderAgeGroupBox(report.ageGroupInsight)}
+    <div class="positioning-box">
+      <h3>Report Positioning</h3>
+      <p>이 리포트는 건강만다라와 검진결과를 함께 읽어, 생활습관 우선순위를 설계하는 건강코치형 통합분석 보고서입니다. 진단보다 실행, 이론보다 적용, 정보보다 변화에 초점을 맞춥니다.</p>
+    </div>
+    ${FOOTER_HTML}
+  </section>`;
+}
+
+function renderDashboardPage(data, chapterIndex, pageNumber) {
+  const { checkupSummary } = data;
+  const byKey = {};
+  (checkupSummary || []).forEach((c) => { byKey[c.key] = c; });
+
+  // 대사증후군 진단기준 5가지만 표시: 허리둘레·혈압·공복혈당·중성지방·HDL콜레스테롤
+  const statDefs = [];
+  if (byKey.waist) statDefs.push({ label: '허리둘레', value: `${byKey.waist.value}cm`, interp: byKey.waist.status === 'ok' ? '정상' : '복부비만 경계' });
+  if (byKey.sbp && byKey.dbp) statDefs.push({ label: '혈압', value: `${byKey.sbp.value}/${byKey.dbp.value}`, interp: byKey.sbp.status === 'ok' ? '정상' : '높은 편' });
+  if (byKey.fbg) statDefs.push({ label: '공복혈당', value: byKey.fbg.value, interp: byKey.fbg.status === 'ok' ? '정상' : byKey.fbg.status === 'gz' ? '경계' : '주의' });
+  if (byKey.tg) statDefs.push({ label: '중성지방', value: byKey.tg.value, interp: byKey.tg.status === 'ok' ? '정상' : '높음' });
+  if (byKey.hdl) statDefs.push({ label: 'HDL 콜레스테롤', value: byKey.hdl.value, interp: byKey.hdl.status === 'ok' ? '정상' : '낮음' });
+
+  const statCards = statDefs
+    .map((s) => `<div class="stat-card"><div class="label">${escapeHtml(s.label)}</div><div class="value">${escapeHtml(s.value)}</div><div class="interp">${escapeHtml(s.interp)}</div></div>`)
+    .join('');
+
+  const toRow = (c) => `<tr><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.value)}${escapeHtml(c.unit)}</td><td>${escapeHtml(c.status === 'ok' ? '정상' : c.status === 'gz' ? '경계' : '주의')}</td></tr>`;
+  const items = checkupSummary || [];
+  const half = Math.ceil(items.length / 2);
+  const leftRows = items.slice(0, half).map(toRow).join('');
+  const rightRows = items.slice(half).map(toRow).join('');
+  const tableHead = '<thead><tr><th>항목</th><th>결과</th><th>해석</th></tr></thead>';
+
+  // 검진수치는 항목별 서식이 고정된 짧은 텍스트라(AI가 생성하는 가변 길이 문단과 달리)
+  // 세로 한 줄짜리 표로만 두면 항목 수가 많을 때(최대 23개) 페이지 높이를 넘겨 다음 장으로
+  // 흘러넘친다. 2열로 나눠 세로 길이를 절반으로 줄여 항상 한 페이지 안에 들어오게 한다.
+  const summaryTableHtml = rightRows
+    ? `<div class="summary-table-cols">
+      <table class="summary-table">${tableHead}<tbody>${leftRows}</tbody></table>
+      <table class="summary-table">${tableHead}<tbody>${rightRows}</tbody></table>
+    </div>`
+    : `<table class="summary-table">${tableHead}<tbody>${leftRows}</tbody></table>`;
+
+  const body = `
+    <div class="stat-grid">${statCards}</div>
+    <h3 style="font-size:11.5px;color:var(--navy);margin-bottom:6px;">검진 수치 요약표</h3>
+    ${summaryTableHtml}`;
+
+  return wrapPage(chapterIndex, pageNumber, '바디 시그널 대시보드', '검진수치 핵심 요약', body);
+}
+
+function renderAreaMapPage(data, chapterIndex, pageNumber) {
+  const { report, areaScores } = data;
+  const areaGrid = (areaScores || [])
+    .map((a) => `
+    <div class="area-grid-item">
+      <div class="name">${escapeHtml(a.icon || '')}${escapeHtml(a.name)}</div>
+      <div class="mini-track"><div class="mini-fill" style="width:${a.pctVal}%"></div></div>
+      <div class="pct">${a.pctVal}%</div>
+    </div>`)
+    .join('');
+
+  const areaInterpretations = (report.areaInterpretations || [])
+    .map((ai) => {
+      const area = (areaScores || []).find((a) => a.id === ai.areaId);
+      const label = area ? `${area.icon || ''}${area.name} ${area.pctVal}%` : `영역 ${ai.areaId}`;
+      return `<li><strong>${escapeHtml(label)}</strong> · ${escapeHtml(ai.summary)}</li>`;
+    })
+    .join('');
+
+  const body = `
+    <div class="area-grid">${areaGrid}</div>
+    <ul class="area-interp-list">${areaInterpretations}</ul>`;
+
+  // noMemo: 이 페이지는 레이더+막대+8개 해석까지 이미 내용이 많아, 메모 블럭을 넣으면
+  // 한 페이지를 넘기기 쉬워서 다른 페이지와 달리 메모 블럭을 뺀다.
+  return wrapPage(chapterIndex, pageNumber, '건강만다라 8영역 맵', '전체 구조와 점수 해석', body, true);
+}
+
+function renderPairPage(pair, meta, chapterIndex, pageNumber) {
+  const body = `
+    <div class="pair-cards">
+      <div class="pair-card"><h4>${escapeHtml(pair.leftTitle)}</h4><p>${escapeHtml(pair.leftNarrative)}</p></div>
+      <div class="pair-card"><h4>${escapeHtml(pair.rightTitle)}</h4><p>${escapeHtml(pair.rightNarrative)}</p></div>
+    </div>
+    <div class="middle-box"><h4>${escapeHtml(pair.middleTitle)}</h4><p>${escapeHtml(pair.middleNarrative)}</p></div>
+    <div class="highlight-box"><h4>${escapeHtml(pair.highlightTitle)}</h4><ul>${linesToListItems(pair.highlightContent)}</ul></div>`;
+
+  return wrapPage(chapterIndex, pageNumber, meta.label, meta.subtitle, body);
+}
+
+function renderTargetPage(data, chapterIndex, pageNumber) {
+  const { report, targetTable } = data;
+  const mechByName = {};
+  (report.grayZoneInsights || []).forEach((gi) => { mechByName[gi.name] = gi.mechanism; });
+  const rows = (targetTable || [])
+    .map((t) => {
+      const mech = t.status !== 'ok' ? mechByName[t.name] : null;
+      const desc = mech
+        ? `${escapeHtml(t.note)}<br><span class="mech-note">${escapeHtml(mech)}</span>`
+        : escapeHtml(t.note);
+      return `<tr><td>${escapeHtml(t.name)}</td><td>${escapeHtml(t.current)}${escapeHtml(t.unit)} → ${escapeHtml(t.target)}</td><td>${desc}</td></tr>`;
+    })
+    .join('');
+
+  const body = `
+    <table class="target-table">
+      <thead><tr><th>항목</th><th>현재/목표</th><th>설명</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="priority-box">${escapeHtml(report.priorityExplanation || '')}</div>
+    <div class="hope-box">${escapeHtml(report.hopeMessage || '')}</div>`;
+
+  return wrapPage(chapterIndex, pageNumber, '목표치 설계', '수치 목표와 8영역 우선순위', body);
+}
+
+function renderNutritionPage(data, chapterIndex, pageNumber) {
+  const np = data.report.nutritionPlan || {};
+  const cards = (np.recommendations || [])
+    .map((r) => `
+    <div class="nutrition-card">
+      <h4>${escapeHtml(r.title)}</h4>
+      <p>${escapeHtml(r.description)}</p>
+      <div class="evidence-source">📖 근거: ${escapeHtml(r.evidenceSource)}</div>
+    </div>`)
+    .join('');
+
+  const body = `
+    <p class="nutrition-summary">${escapeHtml(np.summary || '')}</p>
+    ${cards}`;
+
+  return wrapPage(chapterIndex, pageNumber, '나의 영양설계 추천', '취약 영역 기반 맞춤 영양 가이드', body);
+}
+
+function renderRoadmapPage(data, chapterIndex, pageNumber) {
+  const { report } = data;
+  const rows = (report.roadmap12Week || [])
+    .map((r) => `<div class="roadmap-row"><div class="roadmap-week">${escapeHtml(r.week)}</div><div>${escapeHtml(r.action)}</div></div>`)
+    .join('');
+  const messages = (report.messagingExamples || [])
+    .map((m) => `<li>${escapeHtml(m)}</li>`)
+    .join('');
+
+  const body = `
+    ${rows}
+    <div class="messaging-box">
+      <h4>메시징 서비스 예시</h4>
+      <ul>${messages}</ul>
+    </div>`;
+
+  return wrapPage(chapterIndex, pageNumber, '실행 로드맵', '건강만다라 기반 행동 설계', body);
+}
+
+function renderConclusionPage(data, chapterIndex, pageNumber) {
+  const fc = data.report.finalConclusion || {};
+  const body = `
+    <div class="conclusion-block"><h4>한 줄 결론</h4><p>${escapeHtml(fc.oneLineSummary || '')}</p></div>
+    <div class="conclusion-block"><h4>왜 이 방식이 강한가</h4><p>${escapeHtml(fc.whyStrong || '')}</p></div>
+    <div class="conclusion-block"><h4>최종 제안</h4><ol>${linesToListItems(fc.finalProposal)}</ol></div>`;
+
+  return wrapPage(chapterIndex, pageNumber, '최종 결론', '건강만다라 통합분석의 핵심 요약', body);
+}
+
+function renderReport(data) {
+  const root = document.getElementById('reportRoot');
+  const hasCheckup = Array.isArray(data.checkupSummary) && data.checkupSummary.length > 0;
+  const hasTargets = Array.isArray(data.targetTable) && data.targetTable.length > 0;
+  const pairedSections = data.report.pairedSections || [];
+
+  const pages = [];
+  let chapter = 0;
+  let pageNum = 1;
+
+  pages.push(renderCoverPage(data, pageNum));
+
+  if (hasCheckup) {
+    chapter++; pageNum++;
+    pages.push(renderDashboardPage(data, chapter, pageNum));
+  }
+
+  chapter++; pageNum++;
+  pages.push(renderAreaMapPage(data, chapter, pageNum));
+
+  PAIR_META.forEach((meta, i) => {
+    if (!pairedSections[i]) return;
+    chapter++; pageNum++;
+    pages.push(renderPairPage(pairedSections[i], meta, chapter, pageNum));
+  });
+
+  if (hasCheckup && hasTargets) {
+    chapter++; pageNum++;
+    pages.push(renderTargetPage(data, chapter, pageNum));
+  }
+
+  chapter++; pageNum++;
+  pages.push(renderNutritionPage(data, chapter, pageNum));
+
+  chapter++; pageNum++;
+  pages.push(renderRoadmapPage(data, chapter, pageNum));
+
+  chapter++; pageNum++;
+  pages.push(renderConclusionPage(data, chapter, pageNum));
+
+  root.innerHTML = pages.join('');
+
+  if(document.getElementById("radarCanvas")) drawRadar(data.areaScores || []);
+
+  // 웹폰트가 늦게 적용되면 줄바꿈이 바뀌어 높이 측정이 어긋날 수 있어, 폰트 로딩 완료 후 측정한다.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(finalizeLayout);
+  } else {
+    finalizeLayout();
+  }
+}
+
+function finalizeLayout() {
+  fitMemoBlocks();
+  splitOverflowingPages();
+  // 이어짐 페이지에 새로 생긴 메모 슬롯의 크기를 다시 맞춘다.
+  fitMemoBlocks();
+}
+
+// CSS mm 단위가 이 환경에서 실제로 몇 px인지 직접 재서 쓴다(하드코딩된 96dpi 가정보다 안전).
+function getPageContentHeightPx() {
+  const probe = document.createElement('div');
+  probe.style.height = PAGE_CONTENT_HEIGHT_MM + 'mm';
+  probe.style.position = 'absolute';
+  probe.style.visibility = 'hidden';
+  document.body.appendChild(probe);
+  const px = probe.offsetHeight;
+  document.body.removeChild(probe);
+  return px;
+}
+
+// 메모 박스는 "본문과 푸터 사이 남는 공백을 채우는 용도"로만 쓴다 — 남는 공간이 없으면
+// 아예 빼서, 메모 때문에 그 영역이 다음 페이지로 넘어가는 일이 없도록 한다.
+function fitMemoBlocks() {
+  const pageHeightPx = getPageContentHeightPx() - LAYOUT_SAFETY_BUFFER_PX;
+  const MIN_MEMO_SPACE_PX = 60; // 라벨 + 최소 두 줄 정도는 나와야 메모로서 의미가 있음
+
+  document.querySelectorAll('.report-page').forEach((pageEl) => {
+    const slot = pageEl.querySelector('.memo-slot');
+    if (!slot) return;
+
+    const header = pageEl.querySelector('.page-header');
+    const body = pageEl.querySelector('.page-body');
+    const footer = pageEl.querySelector('.page-footer');
+    const memoBlock = slot.querySelector('.memo-block');
+    const memoLines = slot.querySelector('.memo-lines');
+
+    // 메모를 뺀 상태로 실제 필요한 높이(AI가 생성한 실제 문단 길이 기준)를 먼저 잰다.
+    slot.style.display = 'none';
+    const heightWithoutMemo = header.offsetHeight + body.offsetHeight + footer.offsetHeight;
+    slot.style.display = '';
+
+    const leftover = pageHeightPx - heightWithoutMemo;
+    if (leftover < MIN_MEMO_SPACE_PX) {
+      slot.remove();
+      return;
+    }
+
+    memoLines.style.height = '0px';
+    const chromeHeight = memoBlock.offsetHeight + parseFloat(getComputedStyle(memoBlock).marginTop || '0');
+    memoLines.style.height = Math.max(40, leftover - chromeHeight) + 'px';
+  });
+}
+
+// fitMemoBlocks()가 처리하지 못하는 경우(메모를 빼도 본문 자체가 한 페이지를 넘는 경우) 대비:
+// 페이지 본문의 마지막 요소들을 통째로 다음 페이지로 옮겨 새 이어짐 페이지를 만든다.
+// 카드/표 등은 개별 요소 단위로만 옮기므로 요소 내부가 잘리는 일은 없다.
+function splitOverflowingPages() {
+  // .report-page는 min-height:273mm이 항상 적용돼 있어 실제 넘치는 페이지가 하나도 없어도
+  // offsetHeight가 절대 이 실제 한 페이지 높이보다 작아지지 않는다. 그래서 "넘쳤는지" 판정은
+  // 반드시 줄이지 않은 실제 페이지 높이(fullPageHeight) 기준으로 하고, 안전 여백(버퍼)은
+  // 넘친 페이지를 얼마나 덜어낼지 정하는 목표치(target)에서만 적용한다 — 여기서도 버퍼를 뺀
+  // 값으로 "넘쳤는지"를 판정하면 모든 페이지가 항상 넘친 것으로 오판된다.
+  const fullPageHeight = getPageContentHeightPx();
+  const target = fullPageHeight - LAYOUT_SAFETY_BUFFER_PX;
+  const root = document.getElementById('reportRoot');
+  const queue = Array.from(root.querySelectorAll('.report-page'));
+  const newContinuations = [];
+
+  for (let i = 0; i < queue.length; i++) {
+    const page = queue[i];
+    if (page.offsetHeight <= fullPageHeight + 1) continue;
+
+    const body = page.querySelector('.page-body');
+    const header = page.querySelector('.page-header');
+    if (!body || !header) continue; // 표지처럼 이 함수가 기대하는 구조(헤더+본문)가 아닌 페이지는 건너뜀
+    const moved = [];
+
+    while (page.offsetHeight > target && body.children.length > 1) {
+      moved.unshift(body.lastElementChild);
+      body.removeChild(body.lastElementChild);
+    }
+    if (moved.length === 0) continue; // 남은 요소 하나만으로도 이미 한 페이지를 넘는 극단적 경우 — 더 쪼갤 수 없음
+
+    const chapterNum = header.querySelector('.chapter-num').textContent;
+    const title = header.querySelector('h1').textContent;
+    const subtitle = header.querySelector('.chapter-sub').textContent;
+
+    const continuation = document.createElement('section');
+    continuation.className = 'report-page';
+    continuation.innerHTML = `
+    <header class="page-header">
+      <div class="page-header-top">
+        <div>
+          <div class="chapter-num">${escapeHtml(chapterNum)}</div>
+          <h1>${escapeHtml(title)}</h1>
+          <p class="chapter-sub">${escapeHtml(subtitle)} · 이어서</p>
+        </div>
+        <div class="page-number"></div>
+      </div>
+      <div class="gold-rule"></div>
+    </header>
+    <div class="page-body"></div>
+    ${FOOTER_HTML}`;
+
+    const continuationBody = continuation.querySelector('.page-body');
+    moved.forEach((el) => continuationBody.appendChild(el));
+
+    page.after(continuation);
+    queue.splice(i + 1, 0, continuation); // 이어짐 페이지도 여전히 넘칠 수 있으니 다시 검사 대상에 포함
+    newContinuations.push(continuation);
+  }
+
+  // 메모 슬롯은 분할이 전부 끝난 뒤에 붙인다 — 분할 판정 도중에 넣으면 아직 크기가
+  // 맞춰지지 않은 기본 메모 높이 때문에 불필요한 추가 분할이 발생할 수 있다.
+  newContinuations.forEach((cont) => {
+    cont.querySelector('.page-body').insertAdjacentHTML('beforeend', `<div class="memo-slot">${MEMO_HTML}</div>`);
+  });
+
+  // 표지 페이지는 페이지 번호 배지가 없으므로, 전체 .report-page 순서를 기준으로
+  // 배지가 있는 페이지에만 번호를 다시 매겨 원래 채번 방식(표지=1)을 그대로 유지한다.
+  root.querySelectorAll('.report-page').forEach((pageEl, idx) => {
+    const badge = pageEl.querySelector('.page-number');
+    if (badge) badge.textContent = idx + 1;
+  });
+}
+
+function drawRadar(areaScores) {
+  const canvas = document.getElementById('radarCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2, r = Math.min(W, H) / 2 - 42;
+  const n = 8;
+  const angles = Array.from({ length: n }, (_, i) => ((2 * Math.PI / n) * i) - Math.PI / 2);
+
+  ctx.clearRect(0, 0, W, H);
+
+  for (let level = 1; level <= 4; level++) {
+    ctx.beginPath();
+    angles.forEach((angle, i) => {
+      const x = cx + Math.cos(angle) * (r * (level / 4));
+      const y = cy + Math.sin(angle) * (r * (level / 4));
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle = `rgba(27,42,71,${0.08 + level * 0.05})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  angles.forEach((angle) => {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+    ctx.strokeStyle = 'rgba(27,42,71,0.15)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  ctx.beginPath();
+  areaScores.forEach((a, i) => {
+    const ratio = Math.max(0, Math.min(1, (Number(a.pctVal) || 0) / 100));
+    const x = cx + Math.cos(angles[i]) * r * ratio;
+    const y = cy + Math.sin(angles[i]) * r * ratio;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(201,162,39,0.25)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(27,42,71,0.9)';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  areaScores.forEach((a, i) => {
+    const ratio = Math.max(0, Math.min(1, (Number(a.pctVal) || 0) / 100));
+    const x = cx + Math.cos(angles[i]) * r * ratio;
+    const y = cy + Math.sin(angles[i]) * r * ratio;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = '#1B2A47';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+
+  ctx.font = 'bold 11px "Noto Sans KR", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  areaScores.forEach((a, i) => {
+    const lx = cx + Math.cos(angles[i]) * (r + 28);
+    const ly = cy + Math.sin(angles[i]) * (r + 28);
+    ctx.fillStyle = '#1B2A47';
+    ctx.fillText(`${a.icon || ''}${a.name}`, lx, ly - 5);
+    ctx.fillStyle = '#8A94A6';
+    ctx.font = '9.5px "Noto Sans KR"';
+    ctx.fillText(`${a.pctVal}%`, lx, ly + 8);
+    ctx.font = 'bold 11px "Noto Sans KR", sans-serif';
+  });
+}
+
+renderReport(window.MANDALA_SAMPLE);
+</script>
+</body>
+</html>

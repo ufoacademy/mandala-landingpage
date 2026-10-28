@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font: 15px system-ui, sans-serif; padding: 18px; color: #172b24; }
+    label { display: block; margin: 12px 0 5px; }
+    input { box-sizing: border-box; width: 100%; padding: 10px; }
+    textarea { box-sizing: border-box; width: 100%; min-height: 112px; padding: 10px; resize: vertical; }
+    button { margin-top: 14px; padding: 9px 14px; cursor: pointer; }
+    #result { margin-top: 16px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    #code { font-family: monospace; font-size: 20px; font-weight: 700; }
+    .warning { color: #9b2c2c; }
+  </style>
+</head>
+<body>
+  <h2>검사 신청 등록</h2>
+  <p>담당자가 결제 완료 여부와 신청자의 이름·휴대폰 번호를 확인한 뒤 등록하세요.</p>
+  <label for="name">이름</label><input id="name" autocomplete="off">
+  <label for="phone">휴대폰 번호</label><input id="phone" inputmode="tel" autocomplete="off">
+  <button id="register" type="button">결제 확인 후 새 검사 등록</button>
+  <hr>
+  <label for="invitation">기존 신청ID</label><input id="invitation" autocomplete="off">
+  <button id="reissue" type="button">해당 신청 코드 재발급</button>
+  <div id="result" role="status"></div>
+  <script>
+    const result = document.getElementById('result');
+    const diagnosisUrl = 'https://mandala-gamma.vercel.app/';
+    function show(response) {
+      result.replaceChildren();
+      if (response.status !== 'ok') {
+        result.textContent = response.status === 'name_review'
+          ? '이 번호는 다른 이름으로 등록되어 있습니다. 신원을 확인한 뒤 담당자가 처리하세요.'
+          : '등록할 수 없습니다. 입력값과 담당자 권한을 확인하세요.';
+        return;
+      }
+      const info = document.createElement('p');
+      info.textContent = `사용자ID: ${response.userId || '기존 ID 유지'} / 신청ID: ${response.invitationId || document.getElementById('invitation').value}`;
+      const code = document.createElement('div');
+      code.id = 'code';
+      code.textContent = response.code;
+      const copy = document.createElement('button');
+      copy.type = 'button';
+      copy.textContent = '코드 복사';
+      copy.onclick = () => navigator.clipboard.writeText(response.code);
+      const message = [
+        '[건강이음센터] 건강만다라 진단 안내',
+        `이번 검사 인증코드: ${response.code}`,
+        `진단 시작: ${diagnosisUrl}`,
+        '진단 첫 화면에서 신청한 이름·휴대폰 번호·인증코드를 입력해 주세요.'
+      ].join('\n');
+      const copyMessage = document.createElement('button');
+      copyMessage.type = 'button';
+      copyMessage.textContent = '문자 내용 복사';
+      const messagePreview = document.createElement('textarea');
+      messagePreview.readOnly = true;
+      messagePreview.setAttribute('aria-label', '발송할 문자 내용');
+      messagePreview.value = message;
+      copyMessage.onclick = () => navigator.clipboard.writeText(message)
+        .then(() => { copyMessage.textContent = '문자 내용 복사 완료'; })
+        .catch(() => { messagePreview.focus(); messagePreview.select(); });
+      const note = document.createElement('p');
+      note.className = 'warning';
+      note.textContent = '이 코드는 지금만 표시됩니다. 결제 확인에 사용한 신청자 번호로 문자 내용을 보내세요. 창을 닫으면 다시 볼 수 없으며, 분실 시 재발급해야 합니다.';
+      result.append(info, code, copy, messagePreview, copyMessage, note);
+    }
+    function fail() { result.textContent = '처리 중 오류가 발생했습니다. 시트 설정과 담당자 권한을 확인하세요.'; }
+    document.getElementById('register').onclick = () => {
+      result.textContent = '등록 중…';
+      google.script.run.withSuccessHandler(show).withFailureHandler(fail)
+        .registerExamApplication({ name: document.getElementById('name').value, phone: document.getElementById('phone').value });
+    };
+    document.getElementById('reissue').onclick = () => {
+      result.textContent = '재발급 중…';
+      google.script.run.withSuccessHandler(show).withFailureHandler(fail)
+        .reissueExamCode(document.getElementById('invitation').value.trim());
+    };
+  </script>
+</body>
+</html>
